@@ -1,0 +1,27 @@
+{
+  "locals": {
+    "url": "/",
+    "name": "The Shubhu.in Blog",
+    "owner": "shubhu",
+    "description": "Ramblings of an immor(t)al demigod"
+  },
+  "output": "../../GitHub/shubhendusaurabh.github.io",
+  "plugins": [
+    "./plugins/paginator.coffee"
+  ],
+  "require": {
+    "moment": "moment",
+    "_": "underscore",
+    "typogr": "typogr"
+  },
+  "jade": {
+    "pretty": true
+  },
+  "markdown": {
+    "smartLists": true,
+    "smartypants": true
+  },
+  "paginator": {
+    "perPage": 3
+  }
+}

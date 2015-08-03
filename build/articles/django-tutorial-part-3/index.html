@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width">
+    <title>Django Tutorial - Part 3 - The Shubhu.in Blog
+    </title>
+    <link rel="alternate" href="//feed.xml" type="application/rss+xml" title="Ramblings of an immor(t)al demigod">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic|Anonymous+Pro:400,700,400italic,700italic|Merriweather:400,700,300">
+    <link rel="stylesheet" href="/css/main.css">
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-58365616-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+  </head>
+  <body class="article-detail">
+    <header class="header">
+      <div class="content-wrap">
+        <h1>Django Tutorial - Part 3</h1>
+        <p class="author">Written by <span class="author"><a href="mailto:me@shubhu.in">Shubhendu Saurabh</a></span>
+        </p>
+      </div>
+    </header>
+    <div id="content">
+      <div class="content-wrap">
+        <article class="article">
+          <section class="content"><h2 id="part-3">Part&nbsp;3</h2>
+<p>Welcome to part 3. In this part we will write <code>templates</code> and <code>admin.py</code> file for the&nbsp;app.</p>
+<h3 id="templates">Templates</h3>
+<p>In top10songs/settings.py file add the following lines for better templates&nbsp;organization.</p>
+<pre><code class="lang-python"><span class="comment"># List of callables that know how to import templates from various sources.</span>
+TEMPLATE_LOADERS = (
+    <span class="string">'django.template.loaders.filesystem.Loader'</span>,
+    <span class="string">'django.template.loaders.app_directories.Loader'</span>,
+    <span class="string">'django.template.loaders.eggs.Loader'</span>,
+)
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    <span class="string">'django.contrib.auth.context_processors.auth'</span>,
+    <span class="string">'django.core.context_processors.request'</span>,
+
+)
+</code></pre>
+<p>Next create <code>templates</code> folder in root folder of your app. Create new file <code>base.html</code>. This will be the layout for all other web&nbsp;pages.</p>
+<pre><code class="lang-html">{% load staticfiles %}
+<span class="doctype">&lt;!<span class="caps">DOCTYPE</span> html&gt;</span>
+<span class="tag">&lt;<span class="title">html</span> <span class="attribute">lang</span>=<span class="value">"en"</span>&gt;</span>
+<span class="tag">&lt;<span class="title">head</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">meta</span> <span class="attribute">charset</span>=<span class="value">"utf-8"</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">link</span> <span class="attribute">type</span>=<span class="value">"application/atom+xml"</span> <span class="attribute">rel</span>=<span class="value">"alternate"</span> <span class="attribute">href</span>=<span class="value">"{% url 'feeds' %}"</span> /&gt;</span>
+    <span class="tag">&lt;<span class="title">title</span>&gt;</span>{% block title %}Home{% endblock %} | Top 10 Songs<span class="tag">&lt;/<span class="title">title</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">link</span> <span class="attribute">href</span>=<span class="value">"//netdna.bootstrapcdn.com/bootswatch/3.3.5/readable/bootstrap.min.css"</span> <span class="attribute">rel</span>=<span class="value">"stylesheet"</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">"stylesheet"</span> <span class="attribute">href</span>=<span class="value">"//netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.css"</span>&gt;</span>
+    {% block stylesheets %}{% endblock %}
+<span class="tag">&lt;/<span class="title">head</span>&gt;</span>
+
+<span class="tag">&lt;<span class="title">body</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"container"</span>&gt;</span>
+
+        {% block content %} {% endblock %}
+
+    <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+    <span class="comment">&lt;!--container--&gt;</span>
+    {% block scripts %}
+    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="django"><span class="xml">
+        window.jQuery || document.write('<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=</span></span><span class="template_tag">{% <span class="keyword">static</span> "js/jquery.min.js" %}</span><span class="xml"><span class="tag">&gt;</span><span class="vbnet"><span class="comment">')</span>
+    </span></span></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+    {% endblock %}
+<span class="tag">&lt;/<span class="title">body</span>&gt;</span>
+
+<span class="tag">&lt;/<span class="title">html</span>&gt;</span>
+</code></pre>
+<p>For <code>Charts List</code> create file <code>templates/chart_list.html</code></p>
+<pre><code class="lang-html">{% extends 'base.html' %}
+{% block title %} All {{ language }} Charts {% endblock %}
+{% block content %}
+<span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"row text-center"</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"col-md-2"</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"col-md-8"</span>&gt;</span>
+
+        <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"panel panel-info"</span>&gt;</span>
+            <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"panel-heading"</span>&gt;</span>All Charts List<span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+            <span class="tag">&lt;<span class="title">ul</span> <span class="attribute">class</span>=<span class="value">"list-group"</span>&gt;</span>
+                {% for chart in charts %}
+                <span class="tag">&lt;<span class="title">li</span> <span class="attribute">class</span>=<span class="value">"list-group-item"</span>&gt;</span>Top 10 {{ chart.get_language_display }} Songs in <span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">'{{ chart.get_absolute_url }}'</span>&gt;</span> {{ chart.week|date }}<span class="tag">&lt;/<span class="title">a</span>&gt;</span>
+                <span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+                {% empty %}
+                <span class="tag">&lt;<span class="title">li</span>&gt;</span>No Chart Found<span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+                {% endfor %}
+            <span class="tag">&lt;/<span class="title">ul</span>&gt;</span>
+        <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+        {% if is_paginated %}
+
+        <span class="tag">&lt;<span class="title">ul</span> <span class="attribute">class</span>=<span class="value">"pagination"</span>&gt;</span>
+
+            {% if page_obj.has_previous %}
+            <span class="tag">&lt;<span class="title">li</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"?page={{ page_obj.previous_page_number }}"</span>&gt;</span>Prev<span class="tag">&lt;/<span class="title">a</span>&gt;</span>
+            <span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+            {% endif %} {% for i in paginator.page_range %} {% if page_obj.has_next %}
+            <span class="tag">&lt;<span class="title">li</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"?page={{i}}"</span>&gt;</span>{{i}}<span class="tag">&lt;/<span class="title">a</span>&gt;</span>
+            <span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+            {% endif %} {% endfor %} {% if page_obj.has_next %}
+            <span class="tag">&lt;<span class="title">li</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"?page={{ page_obj.next_page_number }}"</span>&gt;</span>Next<span class="tag">&lt;/<span class="title">a</span>&gt;</span>
+            <span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+            {% endif %}
+
+        <span class="tag">&lt;/<span class="title">ul</span>&gt;</span>
+
+        {% endif %}
+    <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"col-md-2"</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+{% endblock %}
+</code></pre>
+<p>For <code>Chart detail</code> create file <code>templates/chart_detail.html</code></p>
+<pre><code class="lang-html">{% extends 'base.html' %}
+{% load humanize %}
+{% block title %}{{ object.week }} {{ chart.get_language_display }} Charts{% endblock %}
+{% block content %}
+<span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"panel panel-info text-center"</span> <span class="attribute">itemscope</span> <span class="attribute">itemtype</span>=<span class="value">"http://schema.org/MusicGroup"</span>&gt;</span>
+    <span class="comment">&lt;!-- Default panel contents --&gt;</span>
+    <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"panel-heading"</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">h1</span> <span class="attribute">itemprop</span>=<span class="value">"name"</span>&gt;</span>Top 10 {{ chart.get_language_display }} Songs <span class="tag">&lt;<span class="title">small</span>&gt;</span>({{ chart.week }})<span class="tag">&lt;/<span class="title">small</span>&gt;</span><span class="tag">&lt;/<span class="title">h1</span>&gt;</span>
+    <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+    <span class="comment">&lt;!-- List group --&gt;</span>
+    <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"list-group"</span> &gt;</span>
+        {% for song in object.get_songs %}
+        <span class="tag">&lt;<span class="title">article</span> <span class="attribute">class</span>=<span class="value">"list-group-item center-block"</span> <span class="attribute">itemtype</span>=<span class="value">"http://schema.org/MusicRecording"</span> <span class="attribute">itemscope</span> <span class="attribute">itemprop</span>=<span class="value">"tracks"</span>&gt;</span>
+            <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"row"</span>&gt;</span>
+                <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"col-md-4"</span>&gt;</span>
+                    <span class="tag">&lt;<span class="title">header</span>&gt;</span>
+                        <span class="tag">&lt;<span class="title">h3</span> <span class="attribute">class</span>=<span class="value">"list-group-item-heading"</span>&gt;</span><span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"label label-default"</span>&gt;</span>#{{ forloop.counter }}<span class="tag">&lt;/<span class="title">span</span>&gt;</span><span class="tag">&lt;/<span class="title">h3</span>&gt;</span>
+                        <span class="tag">&lt;<span class="title">h2</span> <span class="attribute">itemprop</span>=<span class="value">"name"</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"{{ song.get_absolute_url }}"</span> <span class="attribute">itemprop</span>=<span class="value">"url"</span>&gt;</span>{{ song.name }}<span class="tag">&lt;/<span class="title">a</span>&gt;</span><span class="tag">&lt;/<span class="title">h2</span>&gt;</span>
+                    <span class="tag">&lt;/<span class="title">header</span>&gt;</span>
+                <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+                <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"col-md-4"</span>&gt;</span>
+                    <span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"{{ song.get_absolute_url }}"</span> <span class="attribute">itemprop</span>=<span class="value">"audio"</span>&gt;</span>
+                        <span class="tag">&lt;<span class="title">img</span> <span class="attribute">class</span>=<span class="value">"img-thumbnail"</span> <span class="attribute">alt</span>=<span class="value">"{{ song.name }}"</span> <span class="attribute">src</span>=<span class="value">"http://i.ytimg.com/vi/{{ song.youtube_id }}/default.jpg"</span> <span class="attribute">itemprop</span>=<span class="value">"image"</span>&gt;</span>
+                    <span class="tag">&lt;/<span class="title">a</span>&gt;</span>
+                <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+                <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"col-md-4"</span>&gt;</span>
+                    <span class="tag">&lt;<span class="title">div</span>&gt;</span>
+                        {% if song.album %}
+                        <span class="tag">&lt;<span class="title">p</span>&gt;</span>Album: <span class="tag">&lt;<span class="title">span</span> <span class="attribute">itemprop</span>=<span class="value">"inAlbum"</span>&gt;</span><span class="tag">&lt;<span class="title">strong</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"{% url 'search' %}?q={{ song.album }}"</span>&gt;</span>{{ song.album }}<span class="tag">&lt;/<span class="title">a</span>&gt;</span><span class="tag">&lt;/<span class="title">strong</span>&gt;</span><span class="tag">&lt;/<span class="title">span</span>&gt;</span>
+                        <span class="tag">&lt;/<span class="title">p</span>&gt;</span>
+                        {% endif %}
+                        {% if song.get_artists %}
+                        <span class="tag">&lt;<span class="title">p</span>&gt;</span>Artist: <span class="tag">&lt;<span class="title">span</span> <span class="attribute">itemprop</span>=<span class="value">"byArtist"</span>&gt;</span><span class="tag">&lt;<span class="title">strong</span>&gt;</span>
+                            {% for artist in song.get_artists %}
+                                <span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"{% url 'search' %}?q={{ artist }}"</span>&gt;</span>{{ artist }}<span class="tag">&lt;/<span class="title">a</span>&gt;</span>
+                                {% if not forloop.last %}{% ifequal forloop.revcounter 2 %} and {% else %}, {% endifequal %}{% else %}{% endif %}
+                            {% endfor %}
+                        <span class="tag">&lt;/<span class="title">strong</span>&gt;</span><span class="tag">&lt;/<span class="title">span</span>&gt;</span>
+                        <span class="tag">&lt;/<span class="title">p</span>&gt;</span>
+                        {% endif %}
+                        {% if song.publisher %}
+                        <span class="tag">&lt;<span class="title">p</span>&gt;</span>Publisher: <span class="tag">&lt;<span class="title">span</span> <span class="attribute">itemprop</span>=<span class="value">"publisher"</span>&gt;</span><span class="tag">&lt;<span class="title">strong</span>&gt;</span>{{ song.publisher }}<span class="tag">&lt;/<span class="title">strong</span>&gt;</span><span class="tag">&lt;/<span class="title">span</span>&gt;</span>
+                        <span class="tag">&lt;/<span class="title">p</span>&gt;</span>
+                        {% endif %}
+                    <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+                <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+            <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+        <span class="tag">&lt;/<span class="title">article</span>&gt;</span>
+        {% endfor %}
+    <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+{% endblock %}
+</code></pre>
+<p>For <code>Song list</code> create <code>templates/song_list.html</code></p>
+<pre><code class="lang-html">{% extends 'base.html' %}
+{% block title %}All Songs{% endblock %}
+{% block content %}
+<span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"row text-center"</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"col-md-2"</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"col-md-8"</span>&gt;</span>
+
+    <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"panel panel-info"</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"panel-heading"</span>&gt;</span>All Songs List<span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">ul</span> <span class="attribute">class</span>=<span class="value">"list-group"</span>&gt;</span>
+            {% for song in object_list %}
+            <span class="tag">&lt;<span class="title">li</span> <span class="attribute">class</span>=<span class="value">"list-group-item"</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">'{{ song.get_absolute_url }}'</span>&gt;</span> {{ song.name }} by {{ song.artist|default:'N/A' }}<span class="tag">&lt;/<span class="title">a</span>&gt;</span>
+            <span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+            {% empty %}
+            <span class="tag">&lt;<span class="title">li</span>&gt;</span>No Songs Found<span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+            {% endfor %}
+        <span class="tag">&lt;/<span class="title">ul</span>&gt;</span>
+    <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+    {% if is_paginated %}
+
+    <span class="tag">&lt;<span class="title">ul</span> <span class="attribute">class</span>=<span class="value">"pagination"</span>&gt;</span>
+
+        {% if page_obj.has_previous %}
+        <span class="tag">&lt;<span class="title">li</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"?page={{ page_obj.previous_page_number }}"</span>&gt;</span>Prev<span class="tag">&lt;/<span class="title">a</span>&gt;</span>
+        <span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+        {% endif %} {% for i in paginator.page_range %} {% if page_obj.has_next %}
+        <span class="tag">&lt;<span class="title">li</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"?page={{i}}"</span>&gt;</span>{{i}}<span class="tag">&lt;/<span class="title">a</span>&gt;</span>
+        <span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+        {% endif %} {% endfor %} {% if page_obj.has_next %}
+        <span class="tag">&lt;<span class="title">li</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"?page={{ page_obj.next_page_number }}"</span>&gt;</span>Next<span class="tag">&lt;/<span class="title">a</span>&gt;</span>
+        <span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+        {% endif %}
+
+    <span class="tag">&lt;/<span class="title">ul</span>&gt;</span>
+
+    {% endif %}
+   <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"col-md-2"</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+{% endblock %}
+```html
+
+For `Song detail` create file `templates/song_detail.html`
+```html
+{% extends 'base.html' %}
+{% block title %}
+{{ song.name }} {% if song.artist %}by {{ song.artist }} {% endif %} {% if song.album %} from {{ song.album }} {% endif %}
+{% endblock %}
+{% block content %}
+<span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"row"</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"col-md-2"</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">article</span> <span class="attribute">itemtype</span>=<span class="value">"http://schema.org/MusicRecording"</span> <span class="attribute">itemscope</span> <span class="attribute">itemprop</span>=<span class="value">"track"</span> <span class="attribute">class</span>=<span class="value">"col-md-8"</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">header</span>&gt;</span>
+            <span class="tag">&lt;<span class="title">h1</span> <span class="attribute">itemprop</span>=<span class="value">"name"</span>&gt;</span>{{ song.name }}<span class="tag">&lt;/<span class="title">h1</span>&gt;</span>
+        <span class="tag">&lt;/<span class="title">header</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">div</span>&gt;</span>
+            {% if song.album %}
+            <span class="tag">&lt;<span class="title">p</span>&gt;</span>Album:
+                <span class="tag">&lt;<span class="title">span</span> <span class="attribute">itemprop</span>=<span class="value">"inAlbum"</span>&gt;</span>
+                    <span class="tag">&lt;<span class="title">strong</span>&gt;</span>
+                        <span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"{% url 'search' %}?q={{ song.album }}"</span>&gt;</span>{{ song.album }}<span class="tag">&lt;/<span class="title">a</span>&gt;</span>
+                    <span class="tag">&lt;/<span class="title">strong</span>&gt;</span>
+                <span class="tag">&lt;/<span class="title">span</span>&gt;</span>
+            <span class="tag">&lt;/<span class="title">p</span>&gt;</span>
+            {% endif %} {% if song.get_artists %}
+            <span class="tag">&lt;<span class="title">p</span>&gt;</span>Artist:
+                <span class="tag">&lt;<span class="title">span</span> <span class="attribute">itemprop</span>=<span class="value">"byArtist"</span>&gt;</span>
+                    <span class="tag">&lt;<span class="title">strong</span>&gt;</span>
+                        {% for artist in song.get_artists %}
+                        <span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"{% url 'search' %}?q={{ artist }}"</span>&gt;</span>{{ artist }}<span class="tag">&lt;/<span class="title">a</span>&gt;</span>
+                        {% if not forloop.last %}{% ifequal forloop.revcounter 2 %} and {% else %}, {% endifequal %}{% else %}{% endif %}
+                        {% endfor %}
+                    <span class="tag">&lt;/<span class="title">strong</span>&gt;</span>
+                <span class="tag">&lt;/<span class="title">span</span>&gt;</span>
+            <span class="tag">&lt;/<span class="title">p</span>&gt;</span>
+            {% endif %} {% if song.publisher %}
+            <span class="tag">&lt;<span class="title">p</span>&gt;</span>Publisher: <span class="tag">&lt;<span class="title">span</span> <span class="attribute">itemprop</span>=<span class="value">"publisher"</span>&gt;</span><span class="tag">&lt;<span class="title">strong</span>&gt;</span>{{ song.publisher }}<span class="tag">&lt;/<span class="title">strong</span>&gt;</span><span class="tag">&lt;/<span class="title">span</span>&gt;</span>
+            <span class="tag">&lt;/<span class="title">p</span>&gt;</span>
+            {% endif %}
+            <span class="tag">&lt;<span class="title">meta</span> <span class="attribute">itemprop</span>=<span class="value">"datePublished"</span> <span class="attribute">content</span>=<span class="value">{{</span> <span class="attribute">song.created_at</span> }} /&gt;</span>
+            <span class="tag">&lt;<span class="title">meta</span> <span class="attribute">itemprop</span>=<span class="value">"duration"</span> <span class="attribute">content</span>=<span class="value">"<span class="caps">PT5M0S</span>"</span> /&gt;</span>
+        <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">div</span> <span class="attribute">itemprop</span>=<span class="value">"video"</span> <span class="attribute">itemscope</span> <span class="attribute">itemtype</span>=<span class="value">"http://schema.org/VideoObject"</span>&gt;</span>
+
+            <span class="tag">&lt;<span class="title">p</span> <span class="attribute">class</span>=<span class="value">"muted"</span>&gt;</span>Youtube Link: <span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"http://youtu.be/{{ song.youtube_id }}"</span> <span class="attribute">itemprop</span>=<span class="value">"audio"</span>&gt;</span>{{ song.name }}<span class="tag">&lt;/<span class="title">a</span>&gt;</span>
+            <span class="tag">&lt;/<span class="title">p</span>&gt;</span>
+            <span class="tag">&lt;<span class="title">section</span> <span class="attribute">class</span>=<span class="value">"row"</span>&gt;</span>
+                <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"embed-responsive embed-responsive-16by9"</span>&gt;</span>
+                    <span class="tag">&lt;<span class="title">iframe</span> <span class="attribute">src</span>=<span class="value">"//www.youtube-nocookie.com/embed/{{ song.youtube_id }}"</span> <span class="attribute">class</span>=<span class="value">"embed-responsive-item"</span> <span class="attribute">allowfullscreen</span>&gt;</span><span class="tag">&lt;/<span class="title">iframe</span>&gt;</span>
+                <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+            <span class="tag">&lt;/<span class="title">section</span>&gt;</span>
+        <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"row"</span>&gt;</span>
+            <span class="tag">&lt;<span class="title">h3</span>&gt;</span>Chart Date <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"pull-right"</span>&gt;</span>Position<span class="tag">&lt;/<span class="title">span</span>&gt;</span><span class="tag">&lt;/<span class="title">h3</span>&gt;</span>
+              <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"list-group"</span>&gt;</span>
+              {% for ranking in song.song.select_related %}
+              <span class="tag">&lt;<span class="title">a</span> <span class="attribute">class</span>=<span class="value">"list-group-item"</span> <span class="attribute">href</span>=<span class="value">"{{ ranking.chart.get_absolute_url }}"</span>&gt;</span>
+                      <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"badge"</span>&gt;</span>{{ ranking.position }}<span class="tag">&lt;/<span class="title">span</span>&gt;</span>
+                      Top 10 {{ ranking.chart.get_language_display}} Songs in {{ ranking.chart.week|date }}
+                  <span class="tag">&lt;/<span class="title">a</span>&gt;</span>
+              {% endfor %}
+              <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+        <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+    <span class="tag">&lt;/<span class="title">article</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"col-md-2"</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+{% endblock %}
+</code></pre>
+<p>The homepage template is similar to chart detail template except that it has more than one template.
+And the archive templates are similar to chart list&nbsp;templates.</p>
+<h3 id="admin">Admin</h3>
+<p>Edit your <code>charts/admin.py</code> file and import all the models created in <code>charts/models.py</code> file.</p>
+<pre><code class="lang-python"><span class="class"><span class="keyword">class</span> <span class="title">SongInline</span><span class="params">(admin.StackedInline)</span>:</span>
+    model = Chart.songs.through
+    extra = <span class="number">10</span>
+
+<span class="class"><span class="keyword">class</span> <span class="title">ChartAdmin</span><span class="params">(admin.ModelAdmin)</span>:</span>
+    inlines = [SongInline]
+</code></pre>
+<p>We are adding songs as inline form for the admin panel. And as songs are added using a through table, hence the model name is <code>Chart.songs.through</code>.</p>
+<h3 id="django-tutorial-series-making-top10songs-http-www-top10songs-co-in-">Django Tutorial Series - Making <a href="http://www.top10songs.co.in">Top10Songs</a></h3>
+<ul>
+<li><a href="/articles/django-tutorial-part-1">Django Tutorial Part&nbsp;1</a></li>
+<li><a href="/articles/django-tutorial-part-2">Django Tutorial Part&nbsp;2</a></li>
+<li><a href="/articles/django-tutorial-part-3">Django Tutorial Part&nbsp;3</a></li>
+<li><a href="/articles/django-tutorial-part-4">Django Tutorial Part&nbsp;4</a></li>
+</ul>
+</section>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class="content-wrap">
+        <div class="nav"><a href="/">« Full blog</a></div>
+        <section class="about"><p>This blog is maintained by <a href="http://shubhu.in">Shubhendu</a> and licensed under the <a href="http://opensource.org/licenses/MIT">MIT-license</a>.
+You can follow him on <a href="http://twitter.com/5hubhu">Twitter</a>. This source of the blog can be found on <a href="http://github.com/shubhendusaurabh">GitHub</a>.
+Thanks for reading.</p>
+<iframe data-aa='35799' src='//ad.a-ads.com/35799?size=120x60' scrolling='no' style='width:120px; height:60px; border:0px; padding:0;overflow:hidden' allowtransparency='true'></iframe>
+
+
+
+        </section>
+        <section class="copy">
+          <p>&copy; 2015 shubhu &mdash; powered by&nbsp;<a href="https://github.com/jnordberg/wintersmith">Wintersmith</a>
+          </p>
+        </section>
+      </div>
+    </footer>
+  </body>
+</html>

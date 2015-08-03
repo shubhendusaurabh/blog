@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width">
+    <title>Django Tutorial - Part 1 - The Shubhu.in Blog
+    </title>
+    <link rel="alternate" href="//feed.xml" type="application/rss+xml" title="Ramblings of an immor(t)al demigod">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic|Anonymous+Pro:400,700,400italic,700italic|Merriweather:400,700,300">
+    <link rel="stylesheet" href="/css/main.css">
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-58365616-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+  </head>
+  <body class="article-detail">
+    <header class="header">
+      <div class="content-wrap">
+        <h1>Django Tutorial - Part 1</h1>
+        <p class="author">Written by <span class="author"><a href="mailto:me@shubhu.in">Shubhendu Saurabh</a></span>
+        </p>
+      </div>
+    </header>
+    <div id="content">
+      <div class="content-wrap">
+        <article class="article">
+          <section class="content"><p>This blog series is about how <a href="http://www.top10songs.co.in">Top 10 Songs</a> was written in <a href="https://www.djangoproject.com/">Django</a>. Mostly intended for beginners looking forward to learning <a href="https://www.djangoproject.com/">Django</a>.
+Hope it&nbsp;helps.</p>
+<h2 id="the-beginning">The&nbsp;Beginning</h2>
+<p>This article assumes that you have already installed django and configured it. If not use <a href="https://docs.djangoproject.com/en/1.8/">Django docs</a> for basic setup&nbsp;process.</p>
+<p>Next using your cli interface cd into directory where you want to keep your code and then run the following command:
+<code>django-admin startproject top10songs</code></p>
+<p>It will create pretty basic django app boilerplate&nbsp;code.</p>
+<p>Next in <code>top10songs/settings.py</code> django will have <code>SECRET_KEY</code> auto generated for you but remove it before deploying the project to public and move the reference to environment&nbsp;variables.</p>
+<p>We can set django to use environment variables instead of hardcoding by using following&nbsp;function.</p>
+<pre><code class="lang-python"><span class="keyword">from</span> django.core.exceptions <span class="keyword">import</span> ImproperlyConfigured
+
+
+<span class="function"><span class="keyword">def</span> <span class="title">get_env_variable</span><span class="params">(var_name)</span>:</span>
+    <span class="keyword">try</span>:
+        <span class="keyword">return</span> os.environ[var_name]
+    <span class="keyword">except</span> KeyError:
+        error_msg = <span class="string">"Set the %s env variable"</span> % var_name
+        <span class="keyword">raise</span> ImproperlyConfigured(error_msg)
+
+SECRET_KEY = get_env_variable(<span class="string">'SECRET_KEY'</span>)
+</code></pre>
+<p>As you can read from the code it tries to get particular environment variable otherwise it raises Error and django won’t&nbsp;start.</p>
+<p>So you will need to set the environment variables by&nbsp;running</p>
+<pre><code class="lang-bash"><span class="built_in">export</span> SECRET_KEY=<span class="string">'&lt;random string&gt;'</span> <span class="comment"># for Linux</span>
+<span class="built_in">set</span> SECRET_KEY=<span class="string">'&lt;random string&gt;'</span> <span class="comment"># for Windows</span>
+</code></pre>
+<p>Next change database, timezone, language settings as per&nbsp;requirements.</p>
+<p>Also for convenience install django plugins like
+<code>Fabric</code>
+<code>django-extensions</code>
+<code>django-debug-toolbar</code>
+<code>pip-tools</code>
+<code>django-htmlmin</code>
+and add them to <code>INSTALLED_APPS</code> tuple.</p>
+<p>Next run <code>python manage.py migrate</code> for initial database setup
+After that you can&nbsp;run</p>
+<pre><code class="lang-bash">python manage.py runserver
+</code></pre>
+<p>If everything goes right you will be greeted with welcome&nbsp;page.</p>
+<p>Next we begin to start creating our app.
+To do that&nbsp;run</p>
+<pre><code class="lang-bash">python manage.py startapp charts
+</code></pre>
+<h2 id="-the-models-https-github-com-shubhendusaurabh-top10songs-blob-master-charts-models-py-"><a href="https://github.com/shubhendusaurabh/top10songs/blob/master/charts/models.py">The&nbsp;Models</a></h2>
+<p>In <code>charts/models.py</code> file
+Create Models <code>Chart</code>, <code>Song</code> and <code>Ranking</code></p>
+<p>For <code>Chart</code> model will have following&nbsp;attributes</p>
+<ul>
+<li><code>language</code> (what language is the chart&nbsp;for)</li>
+<li><code>songs</code> (more on this&nbsp;later)</li>
+<li><code>week</code> Datefield (which week chart is&nbsp;for)</li>
+<li><code>created</code> (for storing when was the chart&nbsp;created)</li>
+</ul>
+<p>Methods</p>
+<ul>
+<li><code>get_songs</code>()
+  because we will be using many to many field using a through table and want to preserve the position of the&nbsp;songs</li>
+<li><code>get_absolute_url</code>()
+  for quick link to the chart object based on its&nbsp;id</li>
+<li><code>__unicode__</code>()
+  for displaying in console or admin&nbsp;app</li>
+</ul>
+<p>For <code>Song</code> Model attributes&nbsp;are</p>
+<ul>
+<li><code>name</code> (Song&nbsp;name)</li>
+<li><code>slug</code> (autoslug field imported from&nbsp;django-extensions)</li>
+<li><code>artist</code> (song&nbsp;artist)</li>
+<li><code>album</code> (song&nbsp;album)</li>
+<li><code>youtube_id</code> (song youtube video url if&nbsp;available)</li>
+<li><code>publisher</code> (song&nbsp;publisher)</li>
+<li><code>created</code> and <code>updated</code> fields for log&nbsp;keeping</li>
+</ul>
+<p>Methods:</p>
+<ul>
+<li><code>__unicode__</code>:
+  for displaying object in admin or console when&nbsp;printing</li>
+<li><code>get_absolute_url</code>:
+  reverse song_detail based on primary&nbsp;key</li>
+<li><code>get_artists</code>:
+  this method just splits artists name from strings like <span class="amp">&amp;</span> or words like Featuring, With&nbsp;etc</li>
+</ul>
+<p>Model <code>Ranking</code></p>
+<p>This is a through table because we need to store position of the songs in the charts.
+So it will have 3&nbsp;fields</p>
+<ul>
+<li><code>song</code> (Foreignkey to&nbsp;song)</li>
+<li><code>chart</code> (Foreignkey to&nbsp;chart)</li>
+<li><code>position</code> (ordering will be based on&nbsp;position)</li>
+</ul>
+<p>With models complete we will look at <code>Views</code> and <code>Urls</code> in the next&nbsp;part.</p>
+<h3 id="django-tutorial-series-making-top10songs-http-www-top10songs-co-in-">Django Tutorial Series - Making <a href="http://www.top10songs.co.in">Top10Songs</a></h3>
+<ul>
+<li><a href="/articles/django-tutorial-part-1">Django Tutorial Part&nbsp;1</a></li>
+<li><a href="/articles/django-tutorial-part-2">Django Tutorial Part&nbsp;2</a></li>
+<li><a href="/articles/django-tutorial-part-3">Django Tutorial Part&nbsp;3</a></li>
+<li><a href="/articles/django-tutorial-part-4">Django Tutorial Part&nbsp;4</a></li>
+</ul>
+</section>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class="content-wrap">
+        <div class="nav"><a href="/">« Full blog</a></div>
+        <section class="about"><p>This blog is maintained by <a href="http://shubhu.in">Shubhendu</a> and licensed under the <a href="http://opensource.org/licenses/MIT">MIT-license</a>.
+You can follow him on <a href="http://twitter.com/5hubhu">Twitter</a>. This source of the blog can be found on <a href="http://github.com/shubhendusaurabh">GitHub</a>.
+Thanks for reading.</p>
+<iframe data-aa='35799' src='//ad.a-ads.com/35799?size=120x60' scrolling='no' style='width:120px; height:60px; border:0px; padding:0;overflow:hidden' allowtransparency='true'></iframe>
+
+
+
+        </section>
+        <section class="copy">
+          <p>&copy; 2015 shubhu &mdash; powered by&nbsp;<a href="https://github.com/jnordberg/wintersmith">Wintersmith</a>
+          </p>
+        </section>
+      </div>
+    </footer>
+  </body>
+</html>

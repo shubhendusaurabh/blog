@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width">
+    <title>Django Tutorial - Part 2 - The Shubhu.in Blog
+    </title>
+    <link rel="alternate" href="//feed.xml" type="application/rss+xml" title="Ramblings of an immor(t)al demigod">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic|Anonymous+Pro:400,700,400italic,700italic|Merriweather:400,700,300">
+    <link rel="stylesheet" href="/css/main.css">
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-58365616-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+  </head>
+  <body class="article-detail">
+    <header class="header">
+      <div class="content-wrap">
+        <h1>Django Tutorial - Part 2</h1>
+        <p class="author">Written by <span class="author"><a href="mailto:me@shubhu.in">Shubhendu Saurabh</a></span>
+        </p>
+      </div>
+    </header>
+    <div id="content">
+      <div class="content-wrap">
+        <article class="article">
+          <section class="content"><p>Welcome to part 2 of Django Tutorial. In this part we will write <code>Views</code> and <code>Urls</code> files.</p>
+<h2 id="-views-"><code>Views</code></h2>
+<p>In the <code>charts\views.py</code> file import datetime, <code>django.views</code> modules and models created in <code>models.py</code> file.</p>
+<p>You can create archive views based on year, month, week, day, today or any particular date by using queryset on <code>Chart</code> model.
+Archive views need <code>queryset</code> or <code>model name</code>, <code>date field</code> in order to work. You can also define various date formats as your choice, just remember to update <code>urls.py</code> file&nbsp;accordingly.</p>
+<p>With <a href="https://docs.djangoproject.com/en/1.8/topics/class-based-views/">Django Class Based Views</a> its very easy to create List View or Detail View for any&nbsp;model.</p>
+<p>We are interested in <code>ListView</code> and <code>DetailView</code> for <code>Chart</code> and <code>Song</code> model.</p>
+<p>For <code>DetailView</code> for <code>Chart</code> use the method <code>prefetch_related(&#39;songs&#39;)</code> as it has many to many relationship on songs and for <code>Song</code> use <code>select_related</code> to minimize number of database&nbsp;queries.</p>
+<p>For <code>ListView</code> for charts we are using filter by language for any particular language otherwise displaying all&nbsp;charts.</p>
+<p>We will also need to create <code>HomePage</code> view with parent class <code>TemplateView</code>. Give it template name and query for latest charts for each&nbsp;language.</p>
+<h2 id="urls">Urls</h2>
+<p>In the <code>urls.py</code> import all the views created above. Next we create regex based patterns for&nbsp;urls.</p>
+<p>For charts we will use primary key as lookup key in the url while for songs we will have primary key as well as slug created from song name in urls for Songs in detail view.
+<code>url(r&#39;^chart/(?P&lt;pk&gt;\d+)/$&#39;, ChartDetailView.as_view(), name=&#39;chart_detail&#39;),</code></p>
+<p><code>url(r&#39;^song/(?P&lt;pk&gt;\d+)/(?P&lt;slug&gt;[\w-]+)/$&#39;, SongDetailView.as_view(), name=&#39;song_detail&#39;)</code></p>
+<p>For list views we can simply have plural form as urls.
+<code>url(r&#39;^songs/$&#39;, SongListView.as_view(), name=&#39;song_list&#39;)</code></p>
+<p><code>url(r&#39;^charts/$&#39;, ChartListView.as_view(), name=&#39;chart_list&#39;)</code></p>
+<p>We will also need to create url for HomePage.
+<code>url(r&#39;^$&#39;, HomePageView.as_view(), name=&#39;homepage&#39;)</code></p>
+<h3 id="django-tutorial-series-making-top10songs-http-www-top10songs-co-in-">Django Tutorial Series - Making <a href="http://www.top10songs.co.in">Top10Songs</a></h3>
+<ul>
+<li><a href="/articles/django-tutorial-part-1">Django Tutorial Part&nbsp;1</a></li>
+<li><a href="/articles/django-tutorial-part-2">Django Tutorial Part&nbsp;2</a></li>
+<li><a href="/articles/django-tutorial-part-3">Django Tutorial Part&nbsp;3</a></li>
+<li><a href="/articles/django-tutorial-part-4">Django Tutorial Part&nbsp;4</a></li>
+</ul>
+</section>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class="content-wrap">
+        <div class="nav"><a href="/">« Full blog</a></div>
+        <section class="about"><p>This blog is maintained by <a href="http://shubhu.in">Shubhendu</a> and licensed under the <a href="http://opensource.org/licenses/MIT">MIT-license</a>.
+You can follow him on <a href="http://twitter.com/5hubhu">Twitter</a>. This source of the blog can be found on <a href="http://github.com/shubhendusaurabh">GitHub</a>.
+Thanks for reading.</p>
+<iframe data-aa='35799' src='//ad.a-ads.com/35799?size=120x60' scrolling='no' style='width:120px; height:60px; border:0px; padding:0;overflow:hidden' allowtransparency='true'></iframe>
+
+
+
+        </section>
+        <section class="copy">
+          <p>&copy; 2015 shubhu &mdash; powered by&nbsp;<a href="https://github.com/jnordberg/wintersmith">Wintersmith</a>
+          </p>
+        </section>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,1163 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:wfw="http://wellformedweb.org/CommentAPI/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>The Shubhu.in Blog</title>
+    <atom:link href="//feed.xml" rel="self" type="application/rss+xml"></atom:link>
+    <link>/</link>
+    <description>Ramblings of an immor(t)al demigod</description>
+    <pubDate>Sun, 02  Aug 2015 05:30:00 +0630</pubDate>
+    <generator>Wintersmith - https://github.com/jnordberg/wintersmith</generator>
+    <language>en</language>
+    <item>
+      <title>Django Tutorial - Part 4</title>
+      <link>//articles/django-tutorial-part-4/</link>
+      <pubDate>Sun, 02  Aug 2015 05:30:00 +0630</pubDate>
+      <guid isPermaLink="true">//articles/django-tutorial-part-4/</guid>
+      <author></author>
+      <description>&lt;p&gt;Welcome to part 4 of Django Tutorial. In this part we will create feeds and sitemaps.&lt;/p&gt;
+&lt;h3 id=&quot;rss-feeds&quot;&gt;RSS Feeds&lt;/h3&gt;
+&lt;p&gt;Create charts/feeds.py file.
+Add the following code.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-python&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;from&lt;/span&gt; django.contrib.syndication.views &lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; Feed
+&lt;span class=&quot;keyword&quot;&gt;from&lt;/span&gt; .models &lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; Chart
+
+
+&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;LatestChartsFeeds&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(Feed)&lt;/span&gt;:&lt;/span&gt;
+    title = &lt;span class=&quot;string&quot;&gt;'Top 10 Songs'&lt;/span&gt;
+    link = &lt;span class=&quot;string&quot;&gt;'/charts/'&lt;/span&gt;
+    description = &lt;span class=&quot;string&quot;&gt;&quot;Top 10 Songs in English, Hindi. Weekly Updated&quot;&lt;/span&gt;
+
+    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;items&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(self)&lt;/span&gt;:&lt;/span&gt;
+        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; Chart.objects.order_by(&lt;span class=&quot;string&quot;&gt;'-week'&lt;/span&gt;)[:&lt;span class=&quot;number&quot;&gt;10&lt;/span&gt;]
+
+    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;item_title&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(self, item)&lt;/span&gt;:&lt;/span&gt;
+        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&quot;Top 10 &quot;&lt;/span&gt; + item.get_language_display() + &lt;span class=&quot;string&quot;&gt;&quot; Songs in &quot;&lt;/span&gt; + item.week.strftime(&lt;span class=&quot;string&quot;&gt;&quot;%B %d, %Y&quot;&lt;/span&gt;)
+
+    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;item_description&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(self, item)&lt;/span&gt;:&lt;/span&gt;
+        songs = item.songs.all()
+        content = &lt;span class=&quot;string&quot;&gt;'&amp;lt;ul&amp;gt;'&lt;/span&gt;
+        template = &lt;span class=&quot;string&quot;&gt;'&amp;lt;li&amp;gt;&amp;lt;a href=&quot;%s&quot;&amp;gt;%s&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;'&lt;/span&gt;
+        &lt;span class=&quot;keyword&quot;&gt;for&lt;/span&gt; song &lt;span class=&quot;keyword&quot;&gt;in&lt;/span&gt; songs:
+            temp = template % (song.get_absolute_url(), song.name)
+            content += temp
+        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; content + &lt;span class=&quot;string&quot;&gt;'&amp;lt;/ul&amp;gt;'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Here we are fetching lastest chart in each language and displaying them in format.
+Read more about &lt;a href=&quot;https://docs.djangoproject.com/en/1.8/ref/contrib/syndication/&quot;&gt;syndication feeds&lt;/a&gt; in django.&lt;/p&gt;
+&lt;h3 id=&quot;sitemaps&quot;&gt;Sitemaps&lt;/h3&gt;
+&lt;p&gt;For Sitemaps add &lt;code&gt;&amp;#39;django.contrib.sitemaps&amp;#39;&lt;/code&gt; to &lt;code&gt;INSTALLED_APPS&lt;/code&gt; tuple.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-python&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;from&lt;/span&gt; django.contrib.sitemaps &lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; Sitemap
+&lt;span class=&quot;keyword&quot;&gt;from&lt;/span&gt; .models &lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; Chart, Song
+
+
+&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;ChartSitemap&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(Sitemap)&lt;/span&gt;:&lt;/span&gt;
+    changefreq = &lt;span class=&quot;string&quot;&gt;&quot;never&quot;&lt;/span&gt;
+    priority = &lt;span class=&quot;number&quot;&gt;0.5&lt;/span&gt;
+
+    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;items&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(self)&lt;/span&gt;:&lt;/span&gt;
+        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; Chart.objects.all()
+
+    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;lastmod&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(self, obj)&lt;/span&gt;:&lt;/span&gt;
+        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; obj.created_at
+
+
+&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;SongSitemap&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(Sitemap)&lt;/span&gt;:&lt;/span&gt;
+    changefreq = &lt;span class=&quot;string&quot;&gt;'never'&lt;/span&gt;
+    priority = &lt;span class=&quot;number&quot;&gt;0.5&lt;/span&gt;
+
+    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;items&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(self)&lt;/span&gt;:&lt;/span&gt;
+        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; Song.objects.all()
+
+    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;lastmod&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(self, obj)&lt;/span&gt;:&lt;/span&gt;
+        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; obj.updated_at
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Read more about &lt;a href=&quot;https://docs.djangoproject.com/en/1.8/ref/contrib/sitemaps/&quot;&gt;sitemaps&lt;/a&gt; in django.&lt;/p&gt;
+&lt;h3 id=&quot;django-tutorial-series-making-top10songs-http-www-top10songs-co-in-&quot;&gt;Django Tutorial Series - Making &lt;a href=&quot;http://www.top10songs.co.in&quot;&gt;Top10Songs&lt;/a&gt;&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;/articles/django-tutorial-part-1&quot;&gt;Django Tutorial Part 1&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/articles/django-tutorial-part-2&quot;&gt;Django Tutorial Part 2&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/articles/django-tutorial-part-3&quot;&gt;Django Tutorial Part 3&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/articles/django-tutorial-part-4&quot;&gt;Django Tutorial Part 4&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    <item>
+      <title>Django Tutorial - Part 3</title>
+      <link>//articles/django-tutorial-part-3/</link>
+      <pubDate>Sat, 01  Aug 2015 05:30:00 +0630</pubDate>
+      <guid isPermaLink="true">//articles/django-tutorial-part-3/</guid>
+      <author></author>
+      <description>&lt;h2 id=&quot;part-3&quot;&gt;Part 3&lt;/h2&gt;
+&lt;p&gt;Welcome to part 3. In this part we will write &lt;code&gt;templates&lt;/code&gt; and &lt;code&gt;admin.py&lt;/code&gt; file for the app.&lt;/p&gt;
+&lt;h3 id=&quot;templates&quot;&gt;Templates&lt;/h3&gt;
+&lt;p&gt;In top10songs/settings.py file add the following lines for better templates organization.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-python&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# List of callables that know how to import templates from various sources.&lt;/span&gt;
+TEMPLATE_LOADERS = (
+    &lt;span class=&quot;string&quot;&gt;'django.template.loaders.filesystem.Loader'&lt;/span&gt;,
+    &lt;span class=&quot;string&quot;&gt;'django.template.loaders.app_directories.Loader'&lt;/span&gt;,
+    &lt;span class=&quot;string&quot;&gt;'django.template.loaders.eggs.Loader'&lt;/span&gt;,
+)
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    &lt;span class=&quot;string&quot;&gt;'django.contrib.auth.context_processors.auth'&lt;/span&gt;,
+    &lt;span class=&quot;string&quot;&gt;'django.core.context_processors.request'&lt;/span&gt;,
+
+)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Next create &lt;code&gt;templates&lt;/code&gt; folder in root folder of your app. Create new file &lt;code&gt;base.html&lt;/code&gt;. This will be the layout for all other web pages.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-html&quot;&gt;{% load staticfiles %}
+&lt;span class=&quot;doctype&quot;&gt;&amp;lt;!DOCTYPE html&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;html&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;lang&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;en&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;head&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;meta&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;charset&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;utf-8&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;link&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;type&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;application/atom+xml&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;rel&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;alternate&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;href&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;{% url 'feeds' %}&quot;&lt;/span&gt; /&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;title&lt;/span&gt;&amp;gt;&lt;/span&gt;{% block title %}Home{% endblock %} | Top 10 Songs&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;title&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;link&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;href&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;//netdna.bootstrapcdn.com/bootswatch/3.3.5/readable/bootstrap.min.css&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;rel&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;stylesheet&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;link&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;rel&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;stylesheet&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;href&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;//netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.css&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    {% block stylesheets %}{% endblock %}
+&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;head&lt;/span&gt;&amp;gt;&lt;/span&gt;
+
+&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;body&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;container&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+
+        {% block content %} {% endblock %}
+
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;comment&quot;&gt;&amp;lt;!--container--&amp;gt;&lt;/span&gt;
+    {% block scripts %}
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;script&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;src&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;undefined&quot;&gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;script&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;script&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;django&quot;&gt;&lt;span class=&quot;xml&quot;&gt;
+        window.jQuery || document.write('&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;script&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;src&lt;/span&gt;=&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;template_tag&quot;&gt;{% &lt;span class=&quot;keyword&quot;&gt;static&lt;/span&gt; &quot;js/jquery.min.js&quot; %}&lt;/span&gt;&lt;span class=&quot;xml&quot;&gt;&lt;span class=&quot;tag&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;vbnet&quot;&gt;&lt;span class=&quot;comment&quot;&gt;')&lt;/span&gt;
+    &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;script&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;script&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;src&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;undefined&quot;&gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;script&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    {% endblock %}
+&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;body&lt;/span&gt;&amp;gt;&lt;/span&gt;
+
+&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;html&lt;/span&gt;&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;For &lt;code&gt;Charts List&lt;/code&gt; create file &lt;code&gt;templates/chart_list.html&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-html&quot;&gt;{% extends 'base.html' %}
+{% block title %} All {{ language }} Charts {% endblock %}
+{% block content %}
+&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;row text-center&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;col-md-2&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;col-md-8&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;panel panel-info&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;panel-heading&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;All Charts List&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;ul&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;list-group&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                {% for chart in charts %}
+                &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;list-group-item&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;Top 10 {{ chart.get_language_display }} Songs in &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;href&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;'{{ chart.get_absolute_url }}'&lt;/span&gt;&amp;gt;&lt;/span&gt; {{ chart.week|date }}&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                {% empty %}
+                &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;No Chart Found&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                {% endfor %}
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;ul&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        {% if is_paginated %}
+
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;ul&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;pagination&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+
+            {% if page_obj.has_previous %}
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;href&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;?page={{ page_obj.previous_page_number }}&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;Prev&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            {% endif %} {% for i in paginator.page_range %} {% if page_obj.has_next %}
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;href&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;?page={{i}}&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;{{i}}&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            {% endif %} {% endfor %} {% if page_obj.has_next %}
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;href&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;?page={{ page_obj.next_page_number }}&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;Next&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            {% endif %}
+
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;ul&lt;/span&gt;&amp;gt;&lt;/span&gt;
+
+        {% endif %}
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;col-md-2&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+{% endblock %}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;For &lt;code&gt;Chart detail&lt;/code&gt; create file &lt;code&gt;templates/chart_detail.html&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-html&quot;&gt;{% extends 'base.html' %}
+{% load humanize %}
+{% block title %}{{ object.week }} {{ chart.get_language_display }} Charts{% endblock %}
+{% block content %}
+&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;panel panel-info text-center&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;itemscope&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;itemtype&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;http://schema.org/MusicGroup&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;comment&quot;&gt;&amp;lt;!-- Default panel contents --&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;panel-heading&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;h1&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;itemprop&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;name&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;Top 10 {{ chart.get_language_display }} Songs &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;small&lt;/span&gt;&amp;gt;&lt;/span&gt;({{ chart.week }})&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;small&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;h1&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;comment&quot;&gt;&amp;lt;!-- List group --&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;list-group&quot;&lt;/span&gt; &amp;gt;&lt;/span&gt;
+        {% for song in object.get_songs %}
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;article&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;list-group-item center-block&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;itemtype&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;http://schema.org/MusicRecording&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;itemscope&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;itemprop&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;tracks&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;row&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;col-md-4&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;header&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;h3&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;list-group-item-heading&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;span&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;label label-default&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;#{{ forloop.counter }}&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;span&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;h3&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;h2&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;itemprop&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;name&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;href&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;{{ song.get_absolute_url }}&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;itemprop&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;url&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;{{ song.name }}&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;h2&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                    &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;header&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;col-md-4&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;href&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;{{ song.get_absolute_url }}&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;itemprop&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;audio&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;img&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;img-thumbnail&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;alt&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;{{ song.name }}&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;src&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;http://i.ytimg.com/vi/{{ song.youtube_id }}/default.jpg&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;itemprop&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;image&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                    &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;col-md-4&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                        {% if song.album %}
+                        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;p&lt;/span&gt;&amp;gt;&lt;/span&gt;Album: &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;span&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;itemprop&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;inAlbum&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;strong&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;href&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;{% url 'search' %}?q={{ song.album }}&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;{{ song.album }}&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;strong&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;span&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                        &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;p&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                        {% endif %}
+                        {% if song.get_artists %}
+                        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;p&lt;/span&gt;&amp;gt;&lt;/span&gt;Artist: &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;span&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;itemprop&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;byArtist&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;strong&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                            {% for artist in song.get_artists %}
+                                &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;href&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;{% url 'search' %}?q={{ artist }}&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;{{ artist }}&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                                {% if not forloop.last %}{% ifequal forloop.revcounter 2 %} and {% else %}, {% endifequal %}{% else %}{% endif %}
+                            {% endfor %}
+                        &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;strong&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;span&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                        &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;p&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                        {% endif %}
+                        {% if song.publisher %}
+                        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;p&lt;/span&gt;&amp;gt;&lt;/span&gt;Publisher: &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;span&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;itemprop&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;publisher&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;strong&lt;/span&gt;&amp;gt;&lt;/span&gt;{{ song.publisher }}&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;strong&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;span&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                        &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;p&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                        {% endif %}
+                    &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;article&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        {% endfor %}
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+{% endblock %}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;For &lt;code&gt;Song list&lt;/code&gt; create &lt;code&gt;templates/song_list.html&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-html&quot;&gt;{% extends 'base.html' %}
+{% block title %}All Songs{% endblock %}
+{% block content %}
+&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;row text-center&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;col-md-2&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;col-md-8&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;panel panel-info&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;panel-heading&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;All Songs List&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;ul&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;list-group&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            {% for song in object_list %}
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;list-group-item&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;href&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;'{{ song.get_absolute_url }}'&lt;/span&gt;&amp;gt;&lt;/span&gt; {{ song.name }} by {{ song.artist|default:'N/A' }}&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            {% empty %}
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;No Songs Found&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            {% endfor %}
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;ul&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    {% if is_paginated %}
+
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;ul&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;pagination&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+
+        {% if page_obj.has_previous %}
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;href&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;?page={{ page_obj.previous_page_number }}&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;Prev&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        {% endif %} {% for i in paginator.page_range %} {% if page_obj.has_next %}
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;href&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;?page={{i}}&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;{{i}}&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        {% endif %} {% endfor %} {% if page_obj.has_next %}
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;href&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;?page={{ page_obj.next_page_number }}&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;Next&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        {% endif %}
+
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;ul&lt;/span&gt;&amp;gt;&lt;/span&gt;
+
+    {% endif %}
+   &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;col-md-2&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+{% endblock %}
+```html
+
+For `Song detail` create file `templates/song_detail.html`
+```html
+{% extends 'base.html' %}
+{% block title %}
+{{ song.name }} {% if song.artist %}by {{ song.artist }} {% endif %} {% if song.album %} from {{ song.album }} {% endif %}
+{% endblock %}
+{% block content %}
+&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;row&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;col-md-2&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;article&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;itemtype&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;http://schema.org/MusicRecording&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;itemscope&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;itemprop&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;track&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;col-md-8&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;header&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;h1&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;itemprop&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;name&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;{{ song.name }}&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;h1&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;header&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            {% if song.album %}
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;p&lt;/span&gt;&amp;gt;&lt;/span&gt;Album:
+                &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;span&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;itemprop&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;inAlbum&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;strong&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;href&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;{% url 'search' %}?q={{ song.album }}&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;{{ song.album }}&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                    &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;strong&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;span&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;p&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            {% endif %} {% if song.get_artists %}
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;p&lt;/span&gt;&amp;gt;&lt;/span&gt;Artist:
+                &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;span&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;itemprop&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;byArtist&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;strong&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                        {% for artist in song.get_artists %}
+                        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;href&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;{% url 'search' %}?q={{ artist }}&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;{{ artist }}&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                        {% if not forloop.last %}{% ifequal forloop.revcounter 2 %} and {% else %}, {% endifequal %}{% else %}{% endif %}
+                        {% endfor %}
+                    &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;strong&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;span&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;p&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            {% endif %} {% if song.publisher %}
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;p&lt;/span&gt;&amp;gt;&lt;/span&gt;Publisher: &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;span&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;itemprop&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;publisher&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;strong&lt;/span&gt;&amp;gt;&lt;/span&gt;{{ song.publisher }}&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;strong&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;span&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;p&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            {% endif %}
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;meta&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;itemprop&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;datePublished&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;content&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;{{&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;song.created_at&lt;/span&gt; }} /&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;meta&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;itemprop&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;duration&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;content&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;PT5M0S&quot;&lt;/span&gt; /&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;itemprop&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;video&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;itemscope&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;itemtype&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;http://schema.org/VideoObject&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;p&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;muted&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;Youtube Link: &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;href&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;http://youtu.be/{{ song.youtube_id }}&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;itemprop&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;audio&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;{{ song.name }}&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;p&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;section&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;row&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;embed-responsive embed-responsive-16by9&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;iframe&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;src&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;//www.youtube-nocookie.com/embed/{{ song.youtube_id }}&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;embed-responsive-item&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;allowfullscreen&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;iframe&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;section&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;row&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;h3&lt;/span&gt;&amp;gt;&lt;/span&gt;Chart Date &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;span&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;pull-right&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;Position&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;span&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;h3&lt;/span&gt;&amp;gt;&lt;/span&gt;
+              &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;list-group&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+              {% for ranking in song.song.select_related %}
+              &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;list-group-item&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;href&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;{{ ranking.chart.get_absolute_url }}&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                      &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;span&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;badge&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;{{ ranking.position }}&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;span&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                      Top 10 {{ ranking.chart.get_language_display}} Songs in {{ ranking.chart.week|date }}
+                  &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt;&amp;gt;&lt;/span&gt;
+              {% endfor %}
+              &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;article&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;col-md-2&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+{% endblock %}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The homepage template is similar to chart detail template except that it has more than one template.
+And the archive templates are similar to chart list templates.&lt;/p&gt;
+&lt;h3 id=&quot;admin&quot;&gt;Admin&lt;/h3&gt;
+&lt;p&gt;Edit your &lt;code&gt;charts/admin.py&lt;/code&gt; file and import all the models created in &lt;code&gt;charts/models.py&lt;/code&gt; file.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-python&quot;&gt;&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;SongInline&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(admin.StackedInline)&lt;/span&gt;:&lt;/span&gt;
+    model = Chart.songs.through
+    extra = &lt;span class=&quot;number&quot;&gt;10&lt;/span&gt;
+
+&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;ChartAdmin&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(admin.ModelAdmin)&lt;/span&gt;:&lt;/span&gt;
+    inlines = [SongInline]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We are adding songs as inline form for the admin panel. And as songs are added using a through table, hence the model name is &lt;code&gt;Chart.songs.through&lt;/code&gt;.&lt;/p&gt;
+&lt;h3 id=&quot;django-tutorial-series-making-top10songs-http-www-top10songs-co-in-&quot;&gt;Django Tutorial Series - Making &lt;a href=&quot;http://www.top10songs.co.in&quot;&gt;Top10Songs&lt;/a&gt;&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;/articles/django-tutorial-part-1&quot;&gt;Django Tutorial Part 1&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/articles/django-tutorial-part-2&quot;&gt;Django Tutorial Part 2&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/articles/django-tutorial-part-3&quot;&gt;Django Tutorial Part 3&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/articles/django-tutorial-part-4&quot;&gt;Django Tutorial Part 4&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    <item>
+      <title>Django Tutorial - Part 2</title>
+      <link>//articles/django-tutorial-part-2/</link>
+      <pubDate>Fri, 31 Jul 2015 05:30:00 +0630</pubDate>
+      <guid isPermaLink="true">//articles/django-tutorial-part-2/</guid>
+      <author></author>
+      <description>&lt;p&gt;Welcome to part 2 of Django Tutorial. In this part we will write &lt;code&gt;Views&lt;/code&gt; and &lt;code&gt;Urls&lt;/code&gt; files.&lt;/p&gt;
+&lt;h2 id=&quot;-views-&quot;&gt;&lt;code&gt;Views&lt;/code&gt;&lt;/h2&gt;
+&lt;p&gt;In the &lt;code&gt;charts\views.py&lt;/code&gt; file import datetime, &lt;code&gt;django.views&lt;/code&gt; modules and models created in &lt;code&gt;models.py&lt;/code&gt; file.&lt;/p&gt;
+&lt;p&gt;You can create archive views based on year, month, week, day, today or any particular date by using queryset on &lt;code&gt;Chart&lt;/code&gt; model.
+Archive views need &lt;code&gt;queryset&lt;/code&gt; or &lt;code&gt;model name&lt;/code&gt;, &lt;code&gt;date field&lt;/code&gt; in order to work. You can also define various date formats as your choice, just remember to update &lt;code&gt;urls.py&lt;/code&gt; file accordingly.&lt;/p&gt;
+&lt;p&gt;With &lt;a href=&quot;https://docs.djangoproject.com/en/1.8/topics/class-based-views/&quot;&gt;Django Class Based Views&lt;/a&gt; its very easy to create List View or Detail View for any model.&lt;/p&gt;
+&lt;p&gt;We are interested in &lt;code&gt;ListView&lt;/code&gt; and &lt;code&gt;DetailView&lt;/code&gt; for &lt;code&gt;Chart&lt;/code&gt; and &lt;code&gt;Song&lt;/code&gt; model.&lt;/p&gt;
+&lt;p&gt;For &lt;code&gt;DetailView&lt;/code&gt; for &lt;code&gt;Chart&lt;/code&gt; use the method &lt;code&gt;prefetch_related(&amp;#39;songs&amp;#39;)&lt;/code&gt; as it has many to many relationship on songs and for &lt;code&gt;Song&lt;/code&gt; use &lt;code&gt;select_related&lt;/code&gt; to minimize number of database queries.&lt;/p&gt;
+&lt;p&gt;For &lt;code&gt;ListView&lt;/code&gt; for charts we are using filter by language for any particular language otherwise displaying all charts.&lt;/p&gt;
+&lt;p&gt;We will also need to create &lt;code&gt;HomePage&lt;/code&gt; view with parent class &lt;code&gt;TemplateView&lt;/code&gt;. Give it template name and query for latest charts for each language.&lt;/p&gt;
+&lt;h2 id=&quot;urls&quot;&gt;Urls&lt;/h2&gt;
+&lt;p&gt;In the &lt;code&gt;urls.py&lt;/code&gt; import all the views created above. Next we create regex based patterns for urls.&lt;/p&gt;
+&lt;p&gt;For charts we will use primary key as lookup key in the url while for songs we will have primary key as well as slug created from song name in urls for Songs in detail view.
+&lt;code&gt;url(r&amp;#39;^chart/(?P&amp;lt;pk&amp;gt;\d+)/$&amp;#39;, ChartDetailView.as_view(), name=&amp;#39;chart_detail&amp;#39;),&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;url(r&amp;#39;^song/(?P&amp;lt;pk&amp;gt;\d+)/(?P&amp;lt;slug&amp;gt;[\w-]+)/$&amp;#39;, SongDetailView.as_view(), name=&amp;#39;song_detail&amp;#39;)&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;For list views we can simply have plural form as urls.
+&lt;code&gt;url(r&amp;#39;^songs/$&amp;#39;, SongListView.as_view(), name=&amp;#39;song_list&amp;#39;)&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;url(r&amp;#39;^charts/$&amp;#39;, ChartListView.as_view(), name=&amp;#39;chart_list&amp;#39;)&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;We will also need to create url for HomePage.
+&lt;code&gt;url(r&amp;#39;^$&amp;#39;, HomePageView.as_view(), name=&amp;#39;homepage&amp;#39;)&lt;/code&gt;&lt;/p&gt;
+&lt;h3 id=&quot;django-tutorial-series-making-top10songs-http-www-top10songs-co-in-&quot;&gt;Django Tutorial Series - Making &lt;a href=&quot;http://www.top10songs.co.in&quot;&gt;Top10Songs&lt;/a&gt;&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;/articles/django-tutorial-part-1&quot;&gt;Django Tutorial Part 1&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/articles/django-tutorial-part-2&quot;&gt;Django Tutorial Part 2&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/articles/django-tutorial-part-3&quot;&gt;Django Tutorial Part 3&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/articles/django-tutorial-part-4&quot;&gt;Django Tutorial Part 4&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    <item>
+      <title>Django Tutorial - Part 1</title>
+      <link>//articles/django-tutorial-part-1/</link>
+      <pubDate>Thu, 30 Jul 2015 05:30:00 +0630</pubDate>
+      <guid isPermaLink="true">//articles/django-tutorial-part-1/</guid>
+      <author></author>
+      <description>&lt;p&gt;This blog series is about how &lt;a href=&quot;http://www.top10songs.co.in&quot;&gt;Top 10 Songs&lt;/a&gt; was written in &lt;a href=&quot;https://www.djangoproject.com/&quot;&gt;Django&lt;/a&gt;. Mostly intended for beginners looking forward to learning &lt;a href=&quot;https://www.djangoproject.com/&quot;&gt;Django&lt;/a&gt;.
+Hope it helps.&lt;/p&gt;
+&lt;h2 id=&quot;the-beginning&quot;&gt;The Beginning&lt;/h2&gt;
+&lt;p&gt;This article assumes that you have already installed django and configured it. If not use &lt;a href=&quot;https://docs.djangoproject.com/en/1.8/&quot;&gt;Django docs&lt;/a&gt; for basic setup process.&lt;/p&gt;
+&lt;p&gt;Next using your cli interface cd into directory where you want to keep your code and then run the following command:
+&lt;code&gt;django-admin startproject top10songs&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;It will create pretty basic django app boilerplate code.&lt;/p&gt;
+&lt;p&gt;Next in &lt;code&gt;top10songs/settings.py&lt;/code&gt; django will have &lt;code&gt;SECRET_KEY&lt;/code&gt; auto generated for you but remove it before deploying the project to public and move the reference to environment variables.&lt;/p&gt;
+&lt;p&gt;We can set django to use environment variables instead of hardcoding by using following function.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-python&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;from&lt;/span&gt; django.core.exceptions &lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; ImproperlyConfigured
+
+
+&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;get_env_variable&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(var_name)&lt;/span&gt;:&lt;/span&gt;
+    &lt;span class=&quot;keyword&quot;&gt;try&lt;/span&gt;:
+        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; os.environ[var_name]
+    &lt;span class=&quot;keyword&quot;&gt;except&lt;/span&gt; KeyError:
+        error_msg = &lt;span class=&quot;string&quot;&gt;&quot;Set the %s env variable&quot;&lt;/span&gt; % var_name
+        &lt;span class=&quot;keyword&quot;&gt;raise&lt;/span&gt; ImproperlyConfigured(error_msg)
+
+SECRET_KEY = get_env_variable(&lt;span class=&quot;string&quot;&gt;'SECRET_KEY'&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;As you can read from the code it tries to get particular environment variable otherwise it raises Error and django won’t start.&lt;/p&gt;
+&lt;p&gt;So you will need to set the environment variables by running&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-bash&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;export&lt;/span&gt; SECRET_KEY=&lt;span class=&quot;string&quot;&gt;'&amp;lt;random string&amp;gt;'&lt;/span&gt; &lt;span class=&quot;comment&quot;&gt;# for Linux&lt;/span&gt;
+&lt;span class=&quot;built_in&quot;&gt;set&lt;/span&gt; SECRET_KEY=&lt;span class=&quot;string&quot;&gt;'&amp;lt;random string&amp;gt;'&lt;/span&gt; &lt;span class=&quot;comment&quot;&gt;# for Windows&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Next change database, timezone, language settings as per requirements.&lt;/p&gt;
+&lt;p&gt;Also for convenience install django plugins like
+&lt;code&gt;Fabric&lt;/code&gt;
+&lt;code&gt;django-extensions&lt;/code&gt;
+&lt;code&gt;django-debug-toolbar&lt;/code&gt;
+&lt;code&gt;pip-tools&lt;/code&gt;
+&lt;code&gt;django-htmlmin&lt;/code&gt;
+and add them to &lt;code&gt;INSTALLED_APPS&lt;/code&gt; tuple.&lt;/p&gt;
+&lt;p&gt;Next run &lt;code&gt;python manage.py migrate&lt;/code&gt; for initial database setup
+After that you can run&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-bash&quot;&gt;python manage.py runserver
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If everything goes right you will be greeted with welcome page.&lt;/p&gt;
+&lt;p&gt;Next we begin to start creating our app.
+To do that run&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-bash&quot;&gt;python manage.py startapp charts
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;-the-models-https-github-com-shubhendusaurabh-top10songs-blob-master-charts-models-py-&quot;&gt;&lt;a href=&quot;https://github.com/shubhendusaurabh/top10songs/blob/master/charts/models.py&quot;&gt;The Models&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;In &lt;code&gt;charts/models.py&lt;/code&gt; file
+Create Models &lt;code&gt;Chart&lt;/code&gt;, &lt;code&gt;Song&lt;/code&gt; and &lt;code&gt;Ranking&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;For &lt;code&gt;Chart&lt;/code&gt; model will have following attributes&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;language&lt;/code&gt; (what language is the chart for)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;songs&lt;/code&gt; (more on this later)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;week&lt;/code&gt; Datefield (which week chart is for)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;created&lt;/code&gt; (for storing when was the chart created)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Methods&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;get_songs&lt;/code&gt;()
+  because we will be using many to many field using a through table and want to preserve the position of the songs&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;get_absolute_url&lt;/code&gt;()
+  for quick link to the chart object based on its id&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;__unicode__&lt;/code&gt;()
+  for displaying in console or admin app&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For &lt;code&gt;Song&lt;/code&gt; Model attributes are&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;name&lt;/code&gt; (Song name)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;slug&lt;/code&gt; (autoslug field imported from django-extensions)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;artist&lt;/code&gt; (song artist)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;album&lt;/code&gt; (song album)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;youtube_id&lt;/code&gt; (song youtube video url if available)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;publisher&lt;/code&gt; (song publisher)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;created&lt;/code&gt; and &lt;code&gt;updated&lt;/code&gt; fields for log keeping&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Methods:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;__unicode__&lt;/code&gt;:
+  for displaying object in admin or console when printing&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;get_absolute_url&lt;/code&gt;:
+  reverse song_detail based on primary key&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;get_artists&lt;/code&gt;:
+  this method just splits artists name from strings like &amp;amp; or words like Featuring, With etc&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Model &lt;code&gt;Ranking&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;This is a through table because we need to store position of the songs in the charts.
+So it will have 3 fields&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;song&lt;/code&gt; (Foreignkey to song)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;chart&lt;/code&gt; (Foreignkey to chart)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;position&lt;/code&gt; (ordering will be based on position)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;With models complete we will look at &lt;code&gt;Views&lt;/code&gt; and &lt;code&gt;Urls&lt;/code&gt; in the next part.&lt;/p&gt;
+&lt;h3 id=&quot;django-tutorial-series-making-top10songs-http-www-top10songs-co-in-&quot;&gt;Django Tutorial Series - Making &lt;a href=&quot;http://www.top10songs.co.in&quot;&gt;Top10Songs&lt;/a&gt;&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;/articles/django-tutorial-part-1&quot;&gt;Django Tutorial Part 1&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/articles/django-tutorial-part-2&quot;&gt;Django Tutorial Part 2&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/articles/django-tutorial-part-3&quot;&gt;Django Tutorial Part 3&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/articles/django-tutorial-part-4&quot;&gt;Django Tutorial Part 4&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    <item>
+      <title>Markdown syntax</title>
+      <link>//articles/markdown-syntax/</link>
+      <pubDate>Thu, 02 Feb 2012 05:30:00 +0630</pubDate>
+      <guid isPermaLink="true">//articles/markdown-syntax/</guid>
+      <author></author>
+      <description>&lt;p&gt;Full markdown syntax taken from John Gruber’s &lt;a href=&quot;http://daringfireball.net/projects/markdown/syntax&quot;&gt;Daring Fireball&lt;/a&gt;.
+Did you know that 9 out of 10 bloggers prefer to write in markdown?&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;markdown-syntax&quot;&gt;Markdown: Syntax&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;/articles/markdown-syntax/#overview&quot;&gt;Overview&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;/articles/markdown-syntax/#philosophy&quot;&gt;Philosophy&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/articles/markdown-syntax/#html&quot;&gt;Inline HTML&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/articles/markdown-syntax/#autoescape&quot;&gt;Automatic Escaping for Special Characters&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/articles/markdown-syntax/#block&quot;&gt;Block Elements&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;/articles/markdown-syntax/#p&quot;&gt;Paragraphs and Line Breaks&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/articles/markdown-syntax/#header&quot;&gt;Headers&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/articles/markdown-syntax/#blockquote&quot;&gt;Blockquotes&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/articles/markdown-syntax/#list&quot;&gt;Lists&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/articles/markdown-syntax/#precode&quot;&gt;Code Blocks&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/articles/markdown-syntax/#hr&quot;&gt;Horizontal Rules&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/articles/markdown-syntax/#span&quot;&gt;Span Elements&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;/articles/markdown-syntax/#link&quot;&gt;Links&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/articles/markdown-syntax/#em&quot;&gt;Emphasis&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/articles/markdown-syntax/#code&quot;&gt;Code&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/articles/markdown-syntax/#img&quot;&gt;Images&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/articles/markdown-syntax/#misc&quot;&gt;Miscellaneous&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;/articles/markdown-syntax/#backslash&quot;&gt;Backslash Escapes&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/articles/markdown-syntax/#autolink&quot;&gt;Automatic Links&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; This document is itself written using Markdown; you
+can &lt;a href=&quot;/projects/markdown/syntax.text&quot;&gt;see the source for it by adding ‘.text’ to the URL&lt;/a&gt;.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&quot;overview&quot;&gt;Overview&lt;/h2&gt;
+
+&lt;h3 id=&quot;philosophy&quot;&gt;Philosophy&lt;/h3&gt;
+
+&lt;p&gt;Markdown is intended to be as easy-to-read and easy-to-write as is feasible.&lt;/p&gt;
+&lt;p&gt;Readability, however, is emphasized above all else. A Markdown-formatted
+document should be publishable as-is, as plain text, without looking
+like it’s been marked up with tags or formatting instructions. While
+Markdown’s syntax has been influenced by several existing text-to-HTML
+filters – including &lt;a href=&quot;http://docutils.sourceforge.net/mirror/setext.html&quot;&gt;Setext&lt;/a&gt;, &lt;a href=&quot;http://www.aaronsw.com/2002/atx/&quot;&gt;atx&lt;/a&gt;, &lt;a href=&quot;http://textism.com/tools/textile/&quot;&gt;Textile&lt;/a&gt;, &lt;a href=&quot;http://docutils.sourceforge.net/rst.html&quot;&gt;reStructuredText&lt;/a&gt;,
+&lt;a href=&quot;http://www.triptico.com/software/grutatxt.html&quot;&gt;Grutatext&lt;/a&gt;, and &lt;a href=&quot;http://ettext.taint.org/doc/&quot;&gt;EtText&lt;/a&gt; – the single biggest source of
+inspiration for Markdown’s syntax is the format of plain text email.&lt;/p&gt;
+&lt;p&gt;To this end, Markdown’s syntax is comprised entirely of punctuation
+characters, which punctuation characters have been carefully chosen so
+as to look like what they mean. E.g., asterisks around a word actually
+look like *emphasis*. Markdown lists look like, well, lists. Even
+blockquotes look like quoted passages of text, assuming you’ve ever
+used email.&lt;/p&gt;
+&lt;h3 id=&quot;html&quot;&gt;Inline HTML&lt;/h3&gt;
+
+&lt;p&gt;Markdown’s syntax is intended for one purpose: to be used as a
+format for &lt;em&gt;writing&lt;/em&gt; for the web.&lt;/p&gt;
+&lt;p&gt;Markdown is not a replacement for HTML, or even close to it. Its
+syntax is very small, corresponding only to a very small subset of
+HTML tags. The idea is &lt;em&gt;not&lt;/em&gt; to create a syntax that makes it easier
+to insert HTML tags. In my opinion, HTML tags are already easy to
+insert. The idea for Markdown is to make it easy to read, write, and
+edit prose. HTML is a &lt;em&gt;publishing&lt;/em&gt; format; Markdown is a &lt;em&gt;writing&lt;/em&gt;
+format. Thus, Markdown’s formatting syntax only addresses issues that
+can be conveyed in plain text.&lt;/p&gt;
+&lt;p&gt;For any markup that is not covered by Markdown’s syntax, you simply
+use HTML itself. There’s no need to preface it or delimit it to
+indicate that you’re switching from Markdown to HTML; you just use
+the tags.&lt;/p&gt;
+&lt;p&gt;The only restrictions are that block-level HTML elements – e.g. &lt;code&gt;&amp;lt;div&amp;gt;&lt;/code&gt;,
+&lt;code&gt;&amp;lt;table&amp;gt;&lt;/code&gt;, &lt;code&gt;&amp;lt;pre&amp;gt;&lt;/code&gt;, &lt;code&gt;&amp;lt;p&amp;gt;&lt;/code&gt;, etc. – must be separated from surrounding
+content by blank lines, and the start and end tags of the block should
+not be indented with tabs or spaces. Markdown is smart enough not
+to add extra (unwanted) &lt;code&gt;&amp;lt;p&amp;gt;&lt;/code&gt; tags around HTML block-level tags.&lt;/p&gt;
+&lt;p&gt;For example, to add an HTML table to a Markdown article:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;This is a regular paragraph.
+
+&amp;lt;table&amp;gt;
+    &amp;lt;tr&amp;gt;
+        &amp;lt;td&amp;gt;Foo&amp;lt;/td&amp;gt;
+    &amp;lt;/tr&amp;gt;
+&amp;lt;/table&amp;gt;
+
+This is another regular paragraph.
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Note that Markdown formatting syntax is not processed within block-level
+HTML tags. E.g., you can’t use Markdown-style &lt;code&gt;*emphasis*&lt;/code&gt; inside an
+HTML block.&lt;/p&gt;
+&lt;p&gt;Span-level HTML tags – e.g. &lt;code&gt;&amp;lt;span&amp;gt;&lt;/code&gt;, &lt;code&gt;&amp;lt;cite&amp;gt;&lt;/code&gt;, or &lt;code&gt;&amp;lt;del&amp;gt;&lt;/code&gt; – can be
+used anywhere in a Markdown paragraph, list item, or header. If you
+want, you can even use HTML tags instead of Markdown formatting; e.g. if
+you’d prefer to use HTML &lt;code&gt;&amp;lt;a&amp;gt;&lt;/code&gt; or &lt;code&gt;&amp;lt;img&amp;gt;&lt;/code&gt; tags instead of Markdown’s
+link or image syntax, go right ahead.&lt;/p&gt;
+&lt;p&gt;Unlike block-level HTML tags, Markdown syntax &lt;em&gt;is&lt;/em&gt; processed within
+span-level tags.&lt;/p&gt;
+&lt;h3 id=&quot;autoescape&quot;&gt;Automatic Escaping for Special Characters&lt;/h3&gt;
+
+&lt;p&gt;In HTML, there are two characters that demand special treatment: &lt;code&gt;&amp;lt;&lt;/code&gt;
+and &lt;code&gt;&amp;amp;&lt;/code&gt;. Left angle brackets are used to start tags; ampersands are
+used to denote HTML entities. If you want to use them as literal
+characters, you must escape them as entities, e.g. &lt;code&gt;&amp;amp;lt;&lt;/code&gt;, and
+&lt;code&gt;&amp;amp;amp;&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Ampersands in particular are bedeviling for web writers. If you want to
+write about ‘AT&amp;amp;T’, you need to write ‘&lt;code&gt;AT&amp;amp;amp;T&lt;/code&gt;‘. You even need to
+escape ampersands within URLs. Thus, if you want to link to:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;http://images.google.com/images?num=30&amp;amp;q=larry+bird
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;you need to encode the URL as:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;http://images.google.com/images?num=30&amp;amp;amp;q=larry+bird
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;in your anchor tag &lt;code&gt;href&lt;/code&gt; attribute. Needless to say, this is easy to
+forget, and is probably the single most common source of HTML validation
+errors in otherwise well-marked-up web sites.&lt;/p&gt;
+&lt;p&gt;Markdown allows you to use these characters naturally, taking care of
+all the necessary escaping for you. If you use an ampersand as part of
+an HTML entity, it remains unchanged; otherwise it will be translated
+into &lt;code&gt;&amp;amp;amp;&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;So, if you want to include a copyright symbol in your article, you can write:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;amp;copy;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;and Markdown will leave it alone. But if you write:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;AT&amp;amp;T
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Markdown will translate it to:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;AT&amp;amp;amp;T
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Similarly, because Markdown supports &lt;a href=&quot;/articles/markdown-syntax/#html&quot;&gt;inline HTML&lt;/a&gt;, if you use
+angle brackets as delimiters for HTML tags, Markdown will treat them as
+such. But if you write:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;4 &amp;lt; 5
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Markdown will translate it to:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;4 &amp;amp;lt; 5
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;However, inside Markdown code spans and blocks, angle brackets and
+ampersands are &lt;em&gt;always&lt;/em&gt; encoded automatically. This makes it easy to use
+Markdown to write about HTML code. (As opposed to raw HTML, which is a
+terrible format for writing about HTML syntax, because every single &lt;code&gt;&amp;lt;&lt;/code&gt;
+and &lt;code&gt;&amp;amp;&lt;/code&gt; in your example code needs to be escaped.)&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&quot;block&quot;&gt;Block Elements&lt;/h2&gt;
+
+
+&lt;h3 id=&quot;p&quot;&gt;Paragraphs and Line Breaks&lt;/h3&gt;
+
+&lt;p&gt;A paragraph is simply one or more consecutive lines of text, separated
+by one or more blank lines. (A blank line is any line that looks like a
+blank line – a line containing nothing but spaces or tabs is considered
+blank.) Normal paragraphs should not be indented with spaces or tabs.&lt;/p&gt;
+&lt;p&gt;The implication of the “one or more consecutive lines of text” rule is
+that Markdown supports “hard-wrapped” text paragraphs. This differs
+significantly from most other text-to-HTML formatters (including Movable
+Type’s “Convert Line Breaks” option) which translate every line break
+character in a paragraph into a &lt;code&gt;&amp;lt;br /&amp;gt;&lt;/code&gt; tag.&lt;/p&gt;
+&lt;p&gt;When you &lt;em&gt;do&lt;/em&gt; want to insert a &lt;code&gt;&amp;lt;br /&amp;gt;&lt;/code&gt; break tag using Markdown, you
+end a line with two or more spaces, then type return.&lt;/p&gt;
+&lt;p&gt;Yes, this takes a tad more effort to create a &lt;code&gt;&amp;lt;br /&amp;gt;&lt;/code&gt;, but a simplistic
+“every line break is a &lt;code&gt;&amp;lt;br /&amp;gt;&lt;/code&gt;“ rule wouldn’t work for Markdown.
+Markdown’s email-style &lt;a href=&quot;/articles/markdown-syntax/#blockquote&quot;&gt;blockquoting&lt;/a&gt; and multi-paragraph &lt;a href=&quot;/articles/markdown-syntax/#list&quot;&gt;list items&lt;/a&gt;
+work best – and look better – when you format them with hard breaks.&lt;/p&gt;
+&lt;h3 id=&quot;header&quot;&gt;Headers&lt;/h3&gt;
+
+&lt;p&gt;Markdown supports two styles of headers, &lt;a href=&quot;http://docutils.sourceforge.net/mirror/setext.html&quot;&gt;Setext&lt;/a&gt; and &lt;a href=&quot;http://www.aaronsw.com/2002/atx/&quot;&gt;atx&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Setext-style headers are “underlined” using equal signs (for first-level
+headers) and dashes (for second-level headers). For example:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;This is an H1
+=============
+
+This is an H2
+-------------
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Any number of underlining &lt;code&gt;=&lt;/code&gt;‘s or &lt;code&gt;-&lt;/code&gt;‘s will work.&lt;/p&gt;
+&lt;p&gt;Atx-style headers use 1-6 hash characters at the start of the line,
+corresponding to header levels 1-6. For example:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# This is an H1
+
+## This is an H2
+
+###### This is an H6
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Optionally, you may “close” atx-style headers. This is purely
+cosmetic – you can use this if you think it looks better. The
+closing hashes don’t even need to match the number of hashes
+used to open the header. (The number of opening hashes
+determines the header level.) :&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# This is an H1 #
+
+## This is an H2 ##
+
+### This is an H3 ######
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;blockquote&quot;&gt;Blockquotes&lt;/h3&gt;
+
+&lt;p&gt;Markdown uses email-style &lt;code&gt;&amp;gt;&lt;/code&gt; characters for blockquoting. If you’re
+familiar with quoting passages of text in an email message, then you
+know how to create a blockquote in Markdown. It looks best if you hard
+wrap the text and put a &lt;code&gt;&amp;gt;&lt;/code&gt; before every line:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;gt; This is a blockquote with two paragraphs. Lorem ipsum dolor sit amet,
+&amp;gt; consectetuer adipiscing elit. Aliquam hendrerit mi posuere lectus.
+&amp;gt; Vestibulum enim wisi, viverra nec, fringilla in, laoreet vitae, risus.
+&amp;gt;
+&amp;gt; Donec sit amet nisl. Aliquam semper ipsum sit amet velit. Suspendisse
+&amp;gt; id sem consectetuer libero luctus adipiscing.
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Markdown allows you to be lazy and only put the &lt;code&gt;&amp;gt;&lt;/code&gt; before the first
+line of a hard-wrapped paragraph:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;gt; This is a blockquote with two paragraphs. Lorem ipsum dolor sit amet,
+consectetuer adipiscing elit. Aliquam hendrerit mi posuere lectus.
+Vestibulum enim wisi, viverra nec, fringilla in, laoreet vitae, risus.
+
+&amp;gt; Donec sit amet nisl. Aliquam semper ipsum sit amet velit. Suspendisse
+id sem consectetuer libero luctus adipiscing.
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Blockquotes can be nested (i.e. a blockquote-in-a-blockquote) by
+adding additional levels of &lt;code&gt;&amp;gt;&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;gt; This is the first level of quoting.
+&amp;gt;
+&amp;gt; &amp;gt; This is nested blockquote.
+&amp;gt;
+&amp;gt; Back to the first level.
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Blockquotes can contain other Markdown elements, including headers, lists,
+and code blocks:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;h2 id=&quot;this-is-a-header-&quot;&gt;This is a header.&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;This is the first list item.&lt;/li&gt;
+&lt;li&gt;This is the second list item.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Here’s some example code:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;return shell_exec(&amp;quot;echo $input | $markdown_script&amp;quot;);
+&lt;/code&gt;&lt;/pre&gt;&lt;/blockquote&gt;
+&lt;p&gt;Any decent text editor should make email-style quoting easy. For
+example, with BBEdit, you can make a selection and choose Increase
+Quote Level from the Text menu.&lt;/p&gt;
+&lt;h3 id=&quot;list&quot;&gt;Lists&lt;/h3&gt;
+
+&lt;p&gt;Markdown supports ordered (numbered) and unordered (bulleted) lists.&lt;/p&gt;
+&lt;p&gt;Unordered lists use asterisks, pluses, and hyphens – interchangably
+– as list markers:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;*   Red
+*   Green
+*   Blue
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;is equivalent to:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;+   Red
++   Green
++   Blue
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;and:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;-   Red
+-   Green
+-   Blue
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Ordered lists use numbers followed by periods:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;1.  Bird
+2.  McHale
+3.  Parish
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;It’s important to note that the actual numbers you use to mark the
+list have no effect on the HTML output Markdown produces. The HTML
+Markdown produces from the above list is:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;ol&amp;gt;
+&amp;lt;li&amp;gt;Bird&amp;lt;/li&amp;gt;
+&amp;lt;li&amp;gt;McHale&amp;lt;/li&amp;gt;
+&amp;lt;li&amp;gt;Parish&amp;lt;/li&amp;gt;
+&amp;lt;/ol&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;If you instead wrote the list in Markdown like this:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;1.  Bird
+1.  McHale
+1.  Parish
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;or even:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;3. Bird
+1. McHale
+8. Parish
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;you’d get the exact same HTML output. The point is, if you want to,
+you can use ordinal numbers in your ordered Markdown lists, so that
+the numbers in your source match the numbers in your published HTML.
+But if you want to be lazy, you don’t have to.&lt;/p&gt;
+&lt;p&gt;If you do use lazy list numbering, however, you should still start the
+list with the number 1. At some point in the future, Markdown may support
+starting ordered lists at an arbitrary number.&lt;/p&gt;
+&lt;p&gt;List markers typically start at the left margin, but may be indented by
+up to three spaces. List markers must be followed by one or more spaces
+or a tab.&lt;/p&gt;
+&lt;p&gt;To make lists look nice, you can wrap items with hanging indents:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;*   Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+    Aliquam hendrerit mi posuere lectus. Vestibulum enim wisi,
+    viverra nec, fringilla in, laoreet vitae, risus.
+*   Donec sit amet nisl. Aliquam semper ipsum sit amet velit.
+    Suspendisse id sem consectetuer libero luctus adipiscing.
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;But if you want to be lazy, you don’t have to:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;*   Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+Aliquam hendrerit mi posuere lectus. Vestibulum enim wisi,
+viverra nec, fringilla in, laoreet vitae, risus.
+*   Donec sit amet nisl. Aliquam semper ipsum sit amet velit.
+Suspendisse id sem consectetuer libero luctus adipiscing.
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;If list items are separated by blank lines, Markdown will wrap the
+items in &lt;code&gt;&amp;lt;p&amp;gt;&lt;/code&gt; tags in the HTML output. For example, this input:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;*   Bird
+*   Magic
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;will turn into:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;ul&amp;gt;
+&amp;lt;li&amp;gt;Bird&amp;lt;/li&amp;gt;
+&amp;lt;li&amp;gt;Magic&amp;lt;/li&amp;gt;
+&amp;lt;/ul&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;But this:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;*   Bird
+
+*   Magic
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;will turn into:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;ul&amp;gt;
+&amp;lt;li&amp;gt;&amp;lt;p&amp;gt;Bird&amp;lt;/p&amp;gt;&amp;lt;/li&amp;gt;
+&amp;lt;li&amp;gt;&amp;lt;p&amp;gt;Magic&amp;lt;/p&amp;gt;&amp;lt;/li&amp;gt;
+&amp;lt;/ul&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;List items may consist of multiple paragraphs. Each subsequent
+paragraph in a list item must be indented by either 4 spaces
+or one tab:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;1.  This is a list item with two paragraphs. Lorem ipsum dolor
+    sit amet, consectetuer adipiscing elit. Aliquam hendrerit
+    mi posuere lectus.
+
+    Vestibulum enim wisi, viverra nec, fringilla in, laoreet
+    vitae, risus. Donec sit amet nisl. Aliquam semper ipsum
+    sit amet velit.
+
+2.  Suspendisse id sem consectetuer libero luctus adipiscing.
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;It looks nice if you indent every line of the subsequent
+paragraphs, but here again, Markdown will allow you to be
+lazy:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;*   This is a list item with two paragraphs.
+
+    This is the second paragraph in the list item. You&amp;#39;re
+only required to indent the first line. Lorem ipsum dolor
+sit amet, consectetuer adipiscing elit.
+
+*   Another item in the same list.
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;To put a blockquote within a list item, the blockquote’s &lt;code&gt;&amp;gt;&lt;/code&gt;
+delimiters need to be indented:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;*   A list item with a blockquote:
+
+    &amp;gt; This is a blockquote
+    &amp;gt; inside a list item.
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;To put a code block within a list item, the code block needs
+to be indented &lt;em&gt;twice&lt;/em&gt; – 8 spaces or two tabs:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;*   A list item with a code block:
+
+        &amp;lt;code goes here&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;It’s worth noting that it’s possible to trigger an ordered list by
+accident, by writing something like this:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;1986. What a great season.
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;In other words, a &lt;em&gt;number-period-space&lt;/em&gt; sequence at the beginning of a
+line. To avoid this, you can backslash-escape the period:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;1986\. What a great season.
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;precode&quot;&gt;Code Blocks&lt;/h3&gt;
+
+&lt;p&gt;Pre-formatted code blocks are used for writing about programming or
+markup source code. Rather than forming normal paragraphs, the lines
+of a code block are interpreted literally. Markdown wraps a code block
+in both &lt;code&gt;&amp;lt;pre&amp;gt;&lt;/code&gt; and &lt;code&gt;&amp;lt;code&amp;gt;&lt;/code&gt; tags.&lt;/p&gt;
+&lt;p&gt;To produce a code block in Markdown, simply indent every line of the
+block by at least 4 spaces or 1 tab. For example, given this input:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;This is a normal paragraph:
+
+    This is a code block.
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Markdown will generate:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;p&amp;gt;This is a normal paragraph:&amp;lt;/p&amp;gt;
+
+&amp;lt;pre&amp;gt;&amp;lt;code&amp;gt;This is a code block.
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;One level of indentation – 4 spaces or 1 tab – is removed from each
+line of the code block. For example, this:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Here is an example of AppleScript:
+
+    tell application &amp;quot;Foo&amp;quot;
+        beep
+    end tell
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;will turn into:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;p&amp;gt;Here is an example of AppleScript:&amp;lt;/p&amp;gt;
+
+&amp;lt;pre&amp;gt;&amp;lt;code&amp;gt;tell application &amp;quot;Foo&amp;quot;
+    beep
+end tell
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;A code block continues until it reaches a line that is not indented
+(or the end of the article).&lt;/p&gt;
+&lt;p&gt;Within a code block, ampersands (&lt;code&gt;&amp;amp;&lt;/code&gt;) and angle brackets (&lt;code&gt;&amp;lt;&lt;/code&gt; and &lt;code&gt;&amp;gt;&lt;/code&gt;)
+are automatically converted into HTML entities. This makes it very
+easy to include example HTML source code using Markdown – just paste
+it and indent it, and Markdown will handle the hassle of encoding the
+ampersands and angle brackets. For example, this:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;    &amp;lt;div class=&amp;quot;footer&amp;quot;&amp;gt;
+        &amp;amp;copy; 2004 Foo Corporation
+    &amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;will turn into:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;pre&amp;gt;&amp;lt;code&amp;gt;&amp;amp;lt;div class=&amp;quot;footer&amp;quot;&amp;amp;gt;
+    &amp;amp;amp;copy; 2004 Foo Corporation
+&amp;amp;lt;/div&amp;amp;gt;
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Regular Markdown syntax is not processed within code blocks. E.g.,
+asterisks are just literal asterisks within a code block. This means
+it’s also easy to use Markdown to write about Markdown’s own syntax.&lt;/p&gt;
+&lt;h3 id=&quot;hr&quot;&gt;Horizontal Rules&lt;/h3&gt;
+
+&lt;p&gt;You can produce a horizontal rule tag (&lt;code&gt;&amp;lt;hr /&amp;gt;&lt;/code&gt;) by placing three or
+more hyphens, asterisks, or underscores on a line by themselves. If you
+wish, you may use spaces between the hyphens or asterisks. Each of the
+following lines will produce a horizontal rule:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;* * *
+
+***
+
+*****
+
+- - -
+
+---------------------------------------
+&lt;/code&gt;&lt;/pre&gt;&lt;hr&gt;
+&lt;h2 id=&quot;span&quot;&gt;Span Elements&lt;/h2&gt;
+
+&lt;h3 id=&quot;link&quot;&gt;Links&lt;/h3&gt;
+
+&lt;p&gt;Markdown supports two style of links: &lt;em&gt;inline&lt;/em&gt; and &lt;em&gt;reference&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;In both styles, the link text is delimited by [square brackets].&lt;/p&gt;
+&lt;p&gt;To create an inline link, use a set of regular parentheses immediately
+after the link text’s closing square bracket. Inside the parentheses,
+put the URL where you want the link to point, along with an &lt;em&gt;optional&lt;/em&gt;
+title for the link, surrounded in quotes. For example:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;This is [an example](http://example.com/ &amp;quot;Title&amp;quot;) inline link.
+
+[This link](http://example.net/) has no title attribute.
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Will produce:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;p&amp;gt;This is &amp;lt;a href=&amp;quot;http://example.com/&amp;quot; title=&amp;quot;Title&amp;quot;&amp;gt;
+an example&amp;lt;/a&amp;gt; inline link.&amp;lt;/p&amp;gt;
+
+&amp;lt;p&amp;gt;&amp;lt;a href=&amp;quot;http://example.net/&amp;quot;&amp;gt;This link&amp;lt;/a&amp;gt; has no
+title attribute.&amp;lt;/p&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;If you’re referring to a local resource on the same server, you can
+use relative paths:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;See my [About](/about/) page for details.
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Reference-style links use a second set of square brackets, inside
+which you place a label of your choosing to identify the link:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;This is [an example][id] reference-style link.
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;You can optionally use a space to separate the sets of brackets:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;This is [an example] [id] reference-style link.
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Then, anywhere in the document, you define your link label like this,
+on a line by itself:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[id]: http://example.com/  &amp;quot;Optional Title Here&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;That is:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Square brackets containing the link identifier (optionally
+indented from the left margin using up to three spaces);&lt;/li&gt;
+&lt;li&gt;followed by a colon;&lt;/li&gt;
+&lt;li&gt;followed by one or more spaces (or tabs);&lt;/li&gt;
+&lt;li&gt;followed by the URL for the link;&lt;/li&gt;
+&lt;li&gt;optionally followed by a title attribute for the link, enclosed
+in double or single quotes, or enclosed in parentheses.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The following three link definitions are equivalent:&lt;/p&gt;
+&lt;p&gt;  &lt;a href=&quot;http://example.com/&quot; title=&quot;Optional Title Here&quot;&gt;foo&lt;/a&gt;: &lt;a href=&quot;http://example.com/&quot;&gt;http://example.com/&lt;/a&gt;  ‘Optional Title Here’&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; There is a known bug in Markdown.pl 1.0.1 which prevents
+single quotes from being used to delimit link titles.&lt;/p&gt;
+&lt;p&gt;The link URL may, optionally, be surrounded by angle brackets:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[id]: &amp;lt;http://example.com/&amp;gt;  &amp;quot;Optional Title Here&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;You can put the title attribute on the next line and use extra spaces
+or tabs for padding, which tends to look better with longer URLs:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[id]: http://example.com/longish/path/to/resource/here
+    &amp;quot;Optional Title Here&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Link definitions are only used for creating links during Markdown
+processing, and are stripped from your document in the HTML output.&lt;/p&gt;
+&lt;p&gt;Link definition names may consist of letters, numbers, spaces, and
+punctuation – but they are &lt;em&gt;not&lt;/em&gt; case sensitive. E.g. these two
+links:&lt;/p&gt;
+&lt;p&gt;  [link text][a]
+  [link text][A]&lt;/p&gt;
+&lt;p&gt;are equivalent.&lt;/p&gt;
+&lt;p&gt;The &lt;em&gt;implicit link name&lt;/em&gt; shortcut allows you to omit the name of the
+link, in which case the link text itself is used as the name.
+Just use an empty set of square brackets – e.g., to link the word
+“Google” to the google.com web site, you could simply write:&lt;/p&gt;
+&lt;p&gt;  &lt;a href=&quot;http://google.com/&quot;&gt;Google&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;And then define the link:&lt;/p&gt;
+&lt;p&gt;Because link names may contain spaces, this shortcut even works for
+multiple words in the link text:&lt;/p&gt;
+&lt;p&gt;  Visit &lt;a href=&quot;http://daringfireball.net/&quot;&gt;Daring Fireball&lt;/a&gt; for more information.&lt;/p&gt;
+&lt;p&gt;And then define the link:&lt;/p&gt;
+&lt;p&gt;Link definitions can be placed anywhere in your Markdown document. I
+tend to put them immediately after each paragraph in which they’re
+used, but if you want, you can put them all at the end of your
+document, sort of like footnotes.&lt;/p&gt;
+&lt;p&gt;Here’s an example of reference links in action:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;I get 10 times more traffic from [Google] [1] than from
+[Yahoo] [2] or [MSN] [3].
+
+  [1]: http://google.com/        &amp;quot;Google&amp;quot;
+  [2]: http://search.yahoo.com/  &amp;quot;Yahoo Search&amp;quot;
+  [3]: http://search.msn.com/    &amp;quot;MSN Search&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Using the implicit link name shortcut, you could instead write:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;I get 10 times more traffic from [Google][] than from
+[Yahoo][] or [MSN][].
+
+  [google]: http://google.com/        &amp;quot;Google&amp;quot;
+  [yahoo]:  http://search.yahoo.com/  &amp;quot;Yahoo Search&amp;quot;
+  [msn]:    http://search.msn.com/    &amp;quot;MSN Search&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Both of the above examples will produce the following HTML output:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;p&amp;gt;I get 10 times more traffic from &amp;lt;a href=&amp;quot;http://google.com/&amp;quot;
+title=&amp;quot;Google&amp;quot;&amp;gt;Google&amp;lt;/a&amp;gt; than from
+&amp;lt;a href=&amp;quot;http://search.yahoo.com/&amp;quot; title=&amp;quot;Yahoo Search&amp;quot;&amp;gt;Yahoo&amp;lt;/a&amp;gt;
+or &amp;lt;a href=&amp;quot;http://search.msn.com/&amp;quot; title=&amp;quot;MSN Search&amp;quot;&amp;gt;MSN&amp;lt;/a&amp;gt;.&amp;lt;/p&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;For comparison, here is the same paragraph written using
+Markdown’s inline link style:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;I get 10 times more traffic from [Google](http://google.com/ &amp;quot;Google&amp;quot;)
+than from [Yahoo](http://search.yahoo.com/ &amp;quot;Yahoo Search&amp;quot;) or
+[MSN](http://search.msn.com/ &amp;quot;MSN Search&amp;quot;).
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The point of reference-style links is not that they’re easier to
+write. The point is that with reference-style links, your document
+source is vastly more readable. Compare the above examples: using
+reference-style links, the paragraph itself is only 81 characters
+long; with inline-style links, it’s 176 characters; and as raw HTML,
+it’s 234 characters. In the raw HTML, there’s more markup than there
+is text.&lt;/p&gt;
+&lt;p&gt;With Markdown’s reference-style links, a source document much more
+closely resembles the final output, as rendered in a browser. By
+allowing you to move the markup-related metadata out of the paragraph,
+you can add links without interrupting the narrative flow of your
+prose.&lt;/p&gt;
+&lt;h3 id=&quot;em&quot;&gt;Emphasis&lt;/h3&gt;
+
+&lt;p&gt;Markdown treats asterisks (&lt;code&gt;*&lt;/code&gt;) and underscores (&lt;code&gt;_&lt;/code&gt;) as indicators of
+emphasis. Text wrapped with one &lt;code&gt;*&lt;/code&gt; or &lt;code&gt;_&lt;/code&gt; will be wrapped with an
+HTML &lt;code&gt;&amp;lt;em&amp;gt;&lt;/code&gt; tag; double &lt;code&gt;*&lt;/code&gt;‘s or &lt;code&gt;_&lt;/code&gt;‘s will be wrapped with an HTML
+&lt;code&gt;&amp;lt;strong&amp;gt;&lt;/code&gt; tag. E.g., this input:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;*single asterisks*
+
+_single underscores_
+
+**double asterisks**
+
+__double underscores__
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;will produce:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;em&amp;gt;single asterisks&amp;lt;/em&amp;gt;
+
+&amp;lt;em&amp;gt;single underscores&amp;lt;/em&amp;gt;
+
+&amp;lt;strong&amp;gt;double asterisks&amp;lt;/strong&amp;gt;
+
+&amp;lt;strong&amp;gt;double underscores&amp;lt;/strong&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;You can use whichever style you prefer; the lone restriction is that
+the same character must be used to open and close an emphasis span.&lt;/p&gt;
+&lt;p&gt;Emphasis can be used in the middle of a word:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;un*frigging*believable
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;But if you surround an &lt;code&gt;*&lt;/code&gt; or &lt;code&gt;_&lt;/code&gt; with spaces, it’ll be treated as a
+literal asterisk or underscore.&lt;/p&gt;
+&lt;p&gt;To produce a literal asterisk or underscore at a position where it
+would otherwise be used as an emphasis delimiter, you can backslash
+escape it:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;\*this text is surrounded by literal asterisks\*
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;code&quot;&gt;Code&lt;/h3&gt;
+
+&lt;p&gt;To indicate a span of code, wrap it with backtick quotes (&lt;code&gt;` &lt;/code&gt;).
+Unlike a pre-formatted code block, a code span indicates code within a
+normal paragraph. For example:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Use the `printf()` function.
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;will produce:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;p&amp;gt;Use the &amp;lt;code&amp;gt;printf()&amp;lt;/code&amp;gt; function.&amp;lt;/p&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;To include a literal backtick character within a code span, you can use
+multiple backticks as the opening and closing delimiters:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;``There is a literal backtick (`) here.``
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;which will produce this:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;p&amp;gt;&amp;lt;code&amp;gt;There is a literal backtick (`) here.&amp;lt;/code&amp;gt;&amp;lt;/p&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The backtick delimiters surrounding a code span may include spaces –
+one after the opening, one before the closing. This allows you to place
+literal backtick characters at the beginning or end of a code span:&lt;/p&gt;
+&lt;p&gt;  A single backtick in a code span: &lt;code&gt;` &lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;  A backtick-delimited string in a code span: &lt;code&gt;`foo` &lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;will produce:&lt;/p&gt;
+  &lt;p&gt;A single backtick in a code span: &lt;code&gt;`&lt;/code&gt;&lt;/p&gt;
+
+  &lt;p&gt;A backtick-delimited string in a code span: &lt;code&gt;&lt;code&gt;foo&lt;/code&gt;&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;With a code span, ampersands and angle brackets are encoded as HTML
+entities automatically, which makes it easy to include example HTML
+tags. Markdown will turn this:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Please don&amp;#39;t use any `&amp;lt;blink&amp;gt;` tags.
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;into:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;p&amp;gt;Please don&amp;#39;t use any &amp;lt;code&amp;gt;&amp;amp;lt;blink&amp;amp;gt;&amp;lt;/code&amp;gt; tags.&amp;lt;/p&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;You can write this:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;`&amp;amp;#8212;` is the decimal-encoded equivalent of `&amp;amp;mdash;`.
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;to produce:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;p&amp;gt;&amp;lt;code&amp;gt;&amp;amp;amp;#8212;&amp;lt;/code&amp;gt; is the decimal-encoded
+equivalent of &amp;lt;code&amp;gt;&amp;amp;amp;mdash;&amp;lt;/code&amp;gt;.&amp;lt;/p&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;img&quot;&gt;Images&lt;/h3&gt;
+
+&lt;p&gt;Admittedly, it’s fairly difficult to devise a “natural” syntax for
+placing images into a plain text document format.&lt;/p&gt;
+&lt;p&gt;Markdown uses an image syntax that is intended to resemble the syntax
+for links, allowing for two styles: &lt;em&gt;inline&lt;/em&gt; and &lt;em&gt;reference&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;Inline image syntax looks like this:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;![Alt text](/path/to/img.jpg)
+
+![Alt text](/path/to/img.jpg &amp;quot;Optional title&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;That is:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;An exclamation mark: &lt;code&gt;!&lt;/code&gt;;&lt;/li&gt;
+&lt;li&gt;followed by a set of square brackets, containing the &lt;code&gt;alt&lt;/code&gt;
+attribute text for the image;&lt;/li&gt;
+&lt;li&gt;followed by a set of parentheses, containing the URL or path to
+the image, and an optional &lt;code&gt;title&lt;/code&gt; attribute enclosed in double
+or single quotes.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Reference-style image syntax looks like this:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;![Alt text][id]
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Where “id” is the name of a defined image reference. Image references
+are defined using syntax identical to link references:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[id]: url/to/image  &amp;quot;Optional title attribute&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;As of this writing, Markdown has no syntax for specifying the
+dimensions of an image; if this is important to you, you can simply
+use regular HTML &lt;code&gt;&amp;lt;img&amp;gt;&lt;/code&gt; tags.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&quot;misc&quot;&gt;Miscellaneous&lt;/h2&gt;
+
+&lt;h3 id=&quot;autolink&quot;&gt;Automatic Links&lt;/h3&gt;
+
+&lt;p&gt;Markdown supports a shortcut style for creating “automatic” links for URLs and email addresses: simply surround the URL or email address with angle brackets. What this means is that if you want to show the actual text of a URL or email address, and also have it be a clickable link, you can do this:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;http://example.com/&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Markdown will turn this into:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;a href=&amp;quot;http://example.com/&amp;quot;&amp;gt;http://example.com/&amp;lt;/a&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Automatic links for email addresses work similarly, except that
+Markdown will also perform a bit of randomized decimal and hex
+entity-encoding to help obscure your address from address-harvesting
+spambots. For example, Markdown will turn this:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;address@example.com&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;into something like this:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;a href=&amp;quot;&amp;amp;#x6D;&amp;amp;#x61;i&amp;amp;#x6C;&amp;amp;#x74;&amp;amp;#x6F;:&amp;amp;#x61;&amp;amp;#x64;&amp;amp;#x64;&amp;amp;#x72;&amp;amp;#x65;
+&amp;amp;#115;&amp;amp;#115;&amp;amp;#64;&amp;amp;#101;&amp;amp;#120;&amp;amp;#x61;&amp;amp;#109;&amp;amp;#x70;&amp;amp;#x6C;e&amp;amp;#x2E;&amp;amp;#99;&amp;amp;#111;
+&amp;amp;#109;&amp;quot;&amp;gt;&amp;amp;#x61;&amp;amp;#x64;&amp;amp;#x64;&amp;amp;#x72;&amp;amp;#x65;&amp;amp;#115;&amp;amp;#115;&amp;amp;#64;&amp;amp;#101;&amp;amp;#120;&amp;amp;#x61;
+&amp;amp;#109;&amp;amp;#x70;&amp;amp;#x6C;e&amp;amp;#x2E;&amp;amp;#99;&amp;amp;#111;&amp;amp;#109;&amp;lt;/a&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;which will render in a browser as a clickable link to “address@example.com”.&lt;/p&gt;
+&lt;p&gt;(This sort of entity-encoding trick will indeed fool many, if not
+most, address-harvesting bots, but it definitely won’t fool all of
+them. It’s better than nothing, but an address published in this way
+will probably eventually start receiving spam.)&lt;/p&gt;
+&lt;h3 id=&quot;backslash&quot;&gt;Backslash Escapes&lt;/h3&gt;
+
+&lt;p&gt;Markdown allows you to use backslash escapes to generate literal
+characters which would otherwise have special meaning in Markdown’s
+formatting syntax. For example, if you wanted to surround a word
+with literal asterisks (instead of an HTML &lt;code&gt;&amp;lt;em&amp;gt;&lt;/code&gt; tag), you can use
+backslashes before the asterisks, like this:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;\*literal asterisks\*
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Markdown provides backslash escapes for the following characters:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;\   backslash
+`   backtick
+*   asterisk
+_   underscore
+{}  curly braces
+[]  square brackets
+()  parentheses
+#   hash mark
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;plus sign&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ul&gt;
+&lt;li&gt;minus sign (hyphen)
+.   dot
+!   exclamation mark&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+  </channel>
+</rss>
