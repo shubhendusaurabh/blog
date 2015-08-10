@@ -99,6 +99,8 @@ Apply the following changes to `testseries/settings.py` file
 +    }
 ```
 
+Since we are loading `SECRET_KEY` and `DEVELOPMENT` values from environment variables we need to run,
+`export SECRET_KEY='<KEY_HERE>'` and `export DEVELOPMENT='True'` if on linux otherwise replace `export` with `SET` before running `python manage.py runserver`. 
 Next run `python manage.py migrate` to setup initial tables and then run `python createapp questions` to initailize new app.
 
-In the questions app 
+With the django project initialized, next we will start working on questions app.
