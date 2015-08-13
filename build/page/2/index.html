@@ -31,31 +31,101 @@
       <div class="content-wrap">
         <article class="article intro">
           <header>
-            <p class="date"><span>30. July 2015</span></p>
-            <h2><a href="/articles/django-tutorial-part-1/">Django Tutorial - Part 1</a></h2>
+            <p class="date"><span>02. August 2015</span></p>
+            <h2><a href="/articles/django-tutorial-part-4/">Django Tutorial - Part 4</a></h2>
           </header>
-          <section class="content"><p>This blog series is about how <a href="http://www.top10songs.co.in">Top 10 Songs</a> was written in <a href="https://www.djangoproject.com/">Django</a>. Mostly intended for beginners looking forward to learning <a href="https://www.djangoproject.com/">Django</a>.
-Hope it&nbsp;helps.</p>
+          <section class="content"><p>Welcome to part 4 of Django Tutorial. In this part we will create feeds and&nbsp;sitemaps.</p>
+<h3 id="rss-feeds"><span class="caps">RSS</span>&nbsp;Feeds</h3>
+<p>Create charts/feeds.py file.
+Add the following&nbsp;code.</p>
+<pre><code class="lang-python"><span class="keyword">from</span> django.contrib.syndication.views <span class="keyword">import</span> Feed
+<span class="keyword">from</span> .models <span class="keyword">import</span> Chart
 
-            <p class="more"><a href="/articles/django-tutorial-part-1/">more</a></p>
+
+<span class="class"><span class="keyword">class</span> <span class="title">LatestChartsFeeds</span><span class="params">(Feed)</span>:</span>
+    title = <span class="string">'Top 10 Songs'</span>
+    link = <span class="string">'/charts/'</span>
+    description = <span class="string">"Top 10 Songs in English, Hindi. Weekly Updated"</span>
+
+    <span class="function"><span class="keyword">def</span> <span class="title">items</span><span class="params">(self)</span>:</span>
+        <span class="keyword">return</span> Chart.objects.order_by(<span class="string">'-week'</span>)[:<span class="number">10</span>]
+
+    <span class="function"><span class="keyword">def</span> <span class="title">item_title</span><span class="params">(self, item)</span>:</span>
+        <span class="keyword">return</span> <span class="string">"Top 10 "</span> + item.get_language_display() + <span class="string">" Songs in "</span> + item.week.strftime(<span class="string">"%B %d, %Y"</span>)
+
+    <span class="function"><span class="keyword">def</span> <span class="title">item_description</span><span class="params">(self, item)</span>:</span>
+        songs = item.songs.all()
+        content = <span class="string">'&lt;ul&gt;'</span>
+        template = <span class="string">'&lt;li&gt;&lt;a href="%s"&gt;%s&lt;/a&gt;&lt;/li&gt;'</span>
+        <span class="keyword">for</span> song <span class="keyword">in</span> songs:
+            temp = template % (song.get_absolute_url(), song.name)
+            content += temp
+        <span class="keyword">return</span> content + <span class="string">'&lt;/ul&gt;'</span>
+</code></pre>
+<p>Here we are fetching lastest chart in each language and displaying them in format.
+Read more about <a href="https://docs.djangoproject.com/en/1.8/ref/contrib/syndication/">syndication feeds</a> in&nbsp;django.</p>
+<h3 id="sitemaps">Sitemaps</h3>
+<p>For Sitemaps add <code>&#39;django.contrib.sitemaps&#39;</code> to <code>INSTALLED_APPS</code> tuple.</p>
+<pre><code class="lang-python"><span class="keyword">from</span> django.contrib.sitemaps <span class="keyword">import</span> Sitemap
+<span class="keyword">from</span> .models <span class="keyword">import</span> Chart, Song
+
+
+<span class="class"><span class="keyword">class</span> <span class="title">ChartSitemap</span><span class="params">(Sitemap)</span>:</span>
+    changefreq = <span class="string">"never"</span>
+    priority = <span class="number">0.5</span>
+
+    <span class="function"><span class="keyword">def</span> <span class="title">items</span><span class="params">(self)</span>:</span>
+        <span class="keyword">return</span> Chart.objects.all()
+
+    <span class="function"><span class="keyword">def</span> <span class="title">lastmod</span><span class="params">(self, obj)</span>:</span>
+        <span class="keyword">return</span> obj.created_at
+
+
+<span class="class"><span class="keyword">class</span> <span class="title">SongSitemap</span><span class="params">(Sitemap)</span>:</span>
+    changefreq = <span class="string">'never'</span>
+    priority = <span class="number">0.5</span>
+
+    <span class="function"><span class="keyword">def</span> <span class="title">items</span><span class="params">(self)</span>:</span>
+        <span class="keyword">return</span> Song.objects.all()
+
+    <span class="function"><span class="keyword">def</span> <span class="title">lastmod</span><span class="params">(self, obj)</span>:</span>
+        <span class="keyword">return</span> obj.updated_at
+</code></pre>
+<p>Read more about <a href="https://docs.djangoproject.com/en/1.8/ref/contrib/sitemaps/">sitemaps</a> in&nbsp;django.</p>
+<h3 id="django-tutorial-series-making-top10songs-http-www-top10songs-co-in-">Django Tutorial Series - Making <a href="http://www.top10songs.co.in">Top10Songs</a></h3>
+<ul>
+<li><a href="/articles/django-tutorial-part-1">Django Tutorial Part&nbsp;1</a></li>
+<li><a href="/articles/django-tutorial-part-2">Django Tutorial Part&nbsp;2</a></li>
+<li><a href="/articles/django-tutorial-part-3">Django Tutorial Part&nbsp;3</a></li>
+<li><a href="/articles/django-tutorial-part-4">Django Tutorial Part&nbsp;4</a></li>
+</ul>
+
           </section>
         </article>
         <article class="article intro">
           <header>
-            <p class="date"><span>02. February 2012</span></p>
-            <h2><a href="/articles/markdown-syntax/">Markdown syntax</a></h2>
+            <p class="date"><span>01. August 2015</span></p>
+            <h2><a href="/articles/django-tutorial-part-3/">Django Tutorial - Part 3</a></h2>
           </header>
-          <section class="content"><p>Full markdown syntax taken from John Gruber’s <a href="http://daringfireball.net/projects/markdown/syntax">Daring Fireball</a>.
-Did you know that 9 out of 10 bloggers prefer to write in&nbsp;markdown?</p>
+          <section class="content">
+            <p class="more"><a href="/articles/django-tutorial-part-3/">more</a></p>
+          </section>
+        </article>
+        <article class="article intro">
+          <header>
+            <p class="date"><span>31. July 2015</span></p>
+            <h2><a href="/articles/django-tutorial-part-2/">Django Tutorial - Part 2</a></h2>
+          </header>
+          <section class="content"><p>Welcome to part 2 of Django Tutorial. In this part we will write <code>Views</code> and <code>Urls</code> files.</p>
 
-            <p class="more"><a href="/articles/markdown-syntax/">more</a></p>
+            <p class="more"><a href="/articles/django-tutorial-part-2/">more</a></p>
           </section>
         </article>
       </div>
     </div>
     <footer>
       <div class="content-wrap">
-        <div class="nav"><a href="/">« Newer</a>
+        <div class="nav"><a href="/">« Newer</a><a href="/page/3/">Next page »</a>
         </div>
         <section class="about"><p>This blog is maintained by <a href="http://shubhu.in">Shubhendu</a> and licensed under the <a href="http://opensource.org/licenses/MIT">MIT-license</a>.
 You can follow him on <a href="http://twitter.com/5hubhu">Twitter</a>. This source of the blog can be found on <a href="http://github.com/shubhendusaurabh">GitHub</a>.

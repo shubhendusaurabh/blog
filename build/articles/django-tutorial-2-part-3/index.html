@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width">
+    <title>Django Tutorial 2 - Part 3 - The Shubhu.in Blog
+    </title>
+    <link rel="alternate" href="//feed.xml" type="application/rss+xml" title="Ramblings of an immor(t)al demigod">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic|Anonymous+Pro:400,700,400italic,700italic|Merriweather:400,700,300">
+    <link rel="stylesheet" href="/css/main.css">
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-58365616-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+  </head>
+  <body class="article-detail">
+    <header class="header">
+      <div class="content-wrap">
+        <h1>Django Tutorial 2 - Part 3</h1>
+        <p class="author">Written by <span class="author"><a href="mailto:me@shubhu.in">Shubhendu Saurabh</a></span>
+        </p>
+      </div>
+    </header>
+    <div id="content">
+      <div class="content-wrap">
+        <article class="article">
+          <section class="content"><h3 id="templates">Templates</h3>
+<p>In this part we will being with frontend&nbsp;part.</p>
+<p>Create a new folder <code>templates</code> in both <code>testseries</code> and <code>testseries/questions</code>.
+In the root <code>templates</code> folder create a new file <code>base.html</code> and <code>scripts.html</code>.
+In the <code>base.html</code> file add the following lines of&nbsp;code.</p>
+<pre><code class="lang-html">{% load static %}{% load question_extras %}
+<span class="doctype">&lt;!<span class="caps">DOCTYPE</span> html&gt;</span>
+<span class="tag">&lt;<span class="title">html</span> <span class="attribute">ng-app</span>=<span class="value">"Questions"</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">head</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">meta</span> <span class="attribute">charset</span>=<span class="value">"utf-8"</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">title</span> <span class="attribute">ng-bind</span>=<span class="value">"title"</span>&gt;</span><span class="tag">&lt;/<span class="title">title</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">"stylesheet"</span> <span class="attribute">href</span>=<span class="value">"{% static 'css/bootstrap.min.css' %}"</span> <span class="attribute">media</span>=<span class="value">"screen"</span> <span class="attribute">charset</span>=<span class="value">"utf-8"</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">"stylesheet"</span> <span class="attribute">href</span>=<span class="value">"{% static 'css/styles.css' %}"</span> <span class="attribute">media</span>=<span class="value">"screen"</span> <span class="attribute">charset</span>=<span class="value">"utf-8"</span>&gt;</span>
+    <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">body</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"container"</span>&gt;</span>
+          <span class="tag">&lt;<span class="title">header</span>&gt;</span>
+            <span class="tag">&lt;<span class="title">nav</span> <span class="attribute">class</span>=<span class="value">"navbar navbar-default"</span>&gt;</span>
+              <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"container-fluid"</span>&gt;</span>
+                <span class="comment">&lt;!-- Brand and toggle get grouped for better mobile display --&gt;</span>
+                <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"navbar-header"</span>&gt;</span>
+                  <span class="tag">&lt;<span class="title">button</span> <span class="attribute">type</span>=<span class="value">"button"</span> <span class="attribute">class</span>=<span class="value">"navbar-toggle collapsed"</span> <span class="attribute">data-toggle</span>=<span class="value">"collapse"</span> <span class="attribute">data-target</span>=<span class="value">"#bs-example-navbar-collapse-1"</span> <span class="attribute">aria-expanded</span>=<span class="value">"false"</span>&gt;</span>
+                    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"sr-only"</span>&gt;</span>Toggle navigation<span class="tag">&lt;/<span class="title">span</span>&gt;</span>
+                    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"icon-bar"</span>&gt;</span><span class="tag">&lt;/<span class="title">span</span>&gt;</span>
+                    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"icon-bar"</span>&gt;</span><span class="tag">&lt;/<span class="title">span</span>&gt;</span>
+                    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"icon-bar"</span>&gt;</span><span class="tag">&lt;/<span class="title">span</span>&gt;</span>
+                  <span class="tag">&lt;/<span class="title">button</span>&gt;</span>
+                  <span class="tag">&lt;<span class="title">a</span> <span class="attribute">class</span>=<span class="value">"navbar-brand"</span> <span class="attribute">href</span>=<span class="value">"#"</span>&gt;</span>Brand<span class="tag">&lt;/<span class="title">a</span>&gt;</span>
+                <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+
+                <span class="comment">&lt;!-- Collect the nav links, forms, and other content for toggling --&gt;</span>
+                <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"collapse navbar-collapse"</span> <span class="attribute">id</span>=<span class="value">"bs-example-navbar-collapse-1"</span>&gt;</span>
+                  <span class="tag">&lt;<span class="title">ul</span> <span class="attribute">class</span>=<span class="value">"nav navbar-nav"</span>&gt;</span>
+                    <span class="tag">&lt;<span class="title">li</span> <span class="attribute">class</span>=<span class="value">"active"</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"#"</span>&gt;</span>Link <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"sr-only"</span>&gt;</span>(current)<span class="tag">&lt;/<span class="title">span</span>&gt;</span><span class="tag">&lt;/<span class="title">a</span>&gt;</span><span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+                    <span class="tag">&lt;<span class="title">li</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"#"</span>&gt;</span>Link<span class="tag">&lt;/<span class="title">a</span>&gt;</span><span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+                    <span class="tag">&lt;<span class="title">li</span> <span class="attribute">class</span>=<span class="value">"dropdown"</span>&gt;</span>
+                      <span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"#"</span> <span class="attribute">class</span>=<span class="value">"dropdown-toggle"</span> <span class="attribute">data-toggle</span>=<span class="value">"dropdown"</span> <span class="attribute">role</span>=<span class="value">"button"</span> <span class="attribute">aria-haspopup</span>=<span class="value">"true"</span> <span class="attribute">aria-expanded</span>=<span class="value">"false"</span>&gt;</span>Dropdown <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"caret"</span>&gt;</span><span class="tag">&lt;/<span class="title">span</span>&gt;</span><span class="tag">&lt;/<span class="title">a</span>&gt;</span>
+                      <span class="tag">&lt;<span class="title">ul</span> <span class="attribute">class</span>=<span class="value">"dropdown-menu"</span>&gt;</span>
+                        <span class="tag">&lt;<span class="title">li</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"#"</span>&gt;</span>Action<span class="tag">&lt;/<span class="title">a</span>&gt;</span><span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+                        <span class="tag">&lt;<span class="title">li</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"#"</span>&gt;</span>Another action<span class="tag">&lt;/<span class="title">a</span>&gt;</span><span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+                        <span class="tag">&lt;<span class="title">li</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"#"</span>&gt;</span>Something else here<span class="tag">&lt;/<span class="title">a</span>&gt;</span><span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+                        <span class="tag">&lt;<span class="title">li</span> <span class="attribute">role</span>=<span class="value">"separator"</span> <span class="attribute">class</span>=<span class="value">"divider"</span>&gt;</span><span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+                        <span class="tag">&lt;<span class="title">li</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"#"</span>&gt;</span>Separated link<span class="tag">&lt;/<span class="title">a</span>&gt;</span><span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+                        <span class="tag">&lt;<span class="title">li</span> <span class="attribute">role</span>=<span class="value">"separator"</span> <span class="attribute">class</span>=<span class="value">"divider"</span>&gt;</span><span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+                        <span class="tag">&lt;<span class="title">li</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"#"</span>&gt;</span>One more separated link<span class="tag">&lt;/<span class="title">a</span>&gt;</span><span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+                      <span class="tag">&lt;/<span class="title">ul</span>&gt;</span>
+                    <span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+                  <span class="tag">&lt;/<span class="title">ul</span>&gt;</span>
+                  <span class="tag">&lt;<span class="title">form</span> <span class="attribute">class</span>=<span class="value">"navbar-form navbar-left"</span> <span class="attribute">role</span>=<span class="value">"search"</span>&gt;</span>
+                    <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"form-group"</span>&gt;</span>
+                      <span class="tag">&lt;<span class="title">input</span> <span class="attribute">type</span>=<span class="value">"text"</span> <span class="attribute">class</span>=<span class="value">"form-control"</span> <span class="attribute">placeholder</span>=<span class="value">"Search"</span>&gt;</span>
+                    <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+                    <span class="tag">&lt;<span class="title">button</span> <span class="attribute">type</span>=<span class="value">"submit"</span> <span class="attribute">class</span>=<span class="value">"btn btn-default"</span>&gt;</span>Submit<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
+                  <span class="tag">&lt;/<span class="title">form</span>&gt;</span>
+                <span class="tag">&lt;/<span class="title">div</span>&gt;</span><span class="comment">&lt;!-- /.navbar-collapse --&gt;</span>
+              <span class="tag">&lt;/<span class="title">div</span>&gt;</span><span class="comment">&lt;!-- /.container-fluid --&gt;</span>
+            <span class="tag">&lt;/<span class="title">nav</span>&gt;</span>
+          <span class="tag">&lt;/<span class="title">header</span>&gt;</span>
+        <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"container"</span>&gt;</span>
+            {% block content %}
+            <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">""</span> <span class="attribute">ng-view</span>&gt;</span>
+
+            <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+            {% endblock content %}
+        <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+        {% load_scripts %}
+        <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"{% static 'js/app.js' %}"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"{% static 'js/controllers.js' %}"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"{% static 'js/services.js' %}"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"{% static 'js/directives.js' %}"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+    <span class="tag">&lt;/<span class="title">body</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">html</span>&gt;</span>
+</code></pre>
+<p>It is a pretty basic layout in which we are styling using <a href="http://getbootstrap.com/">Twitter Bootstrap</a>.
+We are using AngularJS so it contains <code>ng-view</code> directive. We are also loading bunch of angular scripts at the&nbsp;end.</p>
+<p>In the <code>questions/templates/questions</code> folder create new files <code>question_list.html</code> and <code>quesiton_detail.html</code>.
+In the <code>question_list.html</code> file add the following&nbsp;content.</p>
+<pre><code class="lang-html">{% extends 'base.html' %}
+
+{% block content %}
+<span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"row"</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"col-lg-12"</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"list-group"</span>&gt;</span>
+            {% for question in question_list %}
+            <span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"{% url 'question_detail' question.id %}"</span> <span class="attribute">class</span>=<span class="value">"list-group-item"</span>&gt;</span>
+                {{ question.question_text }}
+            <span class="tag">&lt;/<span class="title">a</span>&gt;</span>
+            {% endfor %}
+        <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+    <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+{% endblock content %}
+</code></pre>
+<p>And in the <code>testseries/questions/templates/questions/question_detail.html</code> file add the following&nbsp;content.</p>
+<pre><code class="lang-html">{% extends 'base.html' %}
+
+{% block content %}
+<span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"row"</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">h2</span>&gt;</span>{{ question.question_text }}<span class="tag">&lt;/<span class="title">h2</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">p</span>&gt;</span>
+        {{ question.get_sisubject }}
+    <span class="tag">&lt;/<span class="title">p</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">ul</span>&gt;</span>
+        {% for choice in question.choices.all %}
+        <span class="tag">&lt;<span class="title">li</span>&gt;</span>{{ choice.choice_text }}<span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+        {% endfor %}
+    <span class="tag">&lt;/<span class="title">ul</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+{% endblock %}
+</code></pre>
+<p>Although we have added templates to be generated by <code>Django</code>, we will be using <code>AngularJS</code> version which we will cover in next&nbsp;part.</p>
+</section>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class="content-wrap">
+        <div class="nav"><a href="/">« Full blog</a></div>
+        <section class="about"><p>This blog is maintained by <a href="http://shubhu.in">Shubhendu</a> and licensed under the <a href="http://opensource.org/licenses/MIT">MIT-license</a>.
+You can follow him on <a href="http://twitter.com/5hubhu">Twitter</a>. This source of the blog can be found on <a href="http://github.com/shubhendusaurabh">GitHub</a>.
+Thanks for reading.</p>
+<iframe data-aa='35799' src='//ad.a-ads.com/35799?size=120x60' scrolling='no' style='width:120px; height:60px; border:0px; padding:0;overflow:hidden' allowtransparency='true'></iframe>
+
+
+
+        </section>
+        <section class="copy">
+          <p>&copy; 2015 shubhu &mdash; powered by&nbsp;<a href="https://github.com/jnordberg/wintersmith">Wintersmith</a>
+          </p>
+        </section>
+      </div>
+    </footer>
+  </body>
+</html>

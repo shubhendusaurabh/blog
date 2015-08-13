@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width">
+    <title>Django Tutorial 2 - Part 2 - The Shubhu.in Blog
+    </title>
+    <link rel="alternate" href="//feed.xml" type="application/rss+xml" title="Ramblings of an immor(t)al demigod">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic|Anonymous+Pro:400,700,400italic,700italic|Merriweather:400,700,300">
+    <link rel="stylesheet" href="/css/main.css">
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-58365616-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+  </head>
+  <body class="article-detail">
+    <header class="header">
+      <div class="content-wrap">
+        <h1>Django Tutorial 2 - Part 2</h1>
+        <p class="author">Written by <span class="author"><a href="mailto:me@shubhu.in">Shubhendu Saurabh</a></span>
+        </p>
+      </div>
+    </header>
+    <div id="content">
+      <div class="content-wrap">
+        <article class="article">
+          <section class="content"><h3 id="questions-app">Questions&nbsp;app</h3>
+<p>In previous part we initialized django project with database settings and various configurations.
+So lets begin with creating models and views for the&nbsp;app.</p>
+<h3 id="models">Models</h3>
+<p>Open <code>questions/models.py</code> file and add the following&nbsp;code.</p>
+<pre><code class="lang-python"><span class="keyword">from</span> __future__ <span class="keyword">import</span> unicode_literals
+<span class="keyword">from</span> django.utils.encoding <span class="keyword">import</span> python_2_unicode_compatible
+
+<span class="keyword">from</span> django.db <span class="keyword">import</span> models
+
+<span class="decorator">@python_2_unicode_compatible</span>
+<span class="class"><span class="keyword">class</span> <span class="title">Exam</span><span class="params">(models.Model)</span>:</span>
+    name = models.CharField(max_length=<span class="number">100</span>)
+    abbr = models.CharField(max_length=<span class="number">10</span>)
+    description = models.TextField(blank=<span class="keyword">True</span>)
+    created_at = models.DateTimeField(auto_now_add=<span class="keyword">True</span>)
+    updated_at = models.DateTimeField(auto_now=<span class="keyword">True</span>)
+
+    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span>
+        <span class="keyword">return</span> self.name
+
+<span class="decorator">@python_2_unicode_compatible</span>
+<span class="class"><span class="keyword">class</span> <span class="title">Subject</span><span class="params">(models.Model)</span>:</span>
+    name = models.CharField(max_length=<span class="number">50</span>)
+
+    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span>
+        <span class="keyword">return</span> self.name
+
+<span class="decorator">@python_2_unicode_compatible</span>
+<span class="class"><span class="keyword">class</span> <span class="title">Unit</span><span class="params">(models.Model)</span>:</span>
+    name = models.CharField(max_length=<span class="number">100</span>)
+    subject = models.ForeignKey(Subject)
+
+    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span>
+        <span class="keyword">return</span> self.name
+
+<span class="decorator">@python_2_unicode_compatible</span>
+<span class="class"><span class="keyword">class</span> <span class="title">Chapter</span><span class="params">(models.Model)</span>:</span>
+    name = models.CharField(max_length=<span class="number">100</span>)
+    unit = models.ForeignKey(Unit)
+
+    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span>
+        <span class="keyword">return</span> self.name
+
+<span class="decorator">@python_2_unicode_compatible</span>
+<span class="class"><span class="keyword">class</span> <span class="title">Question</span><span class="params">(models.Model)</span>:</span>
+    question_text = models.TextField()
+    answer = models.CharField(max_length=<span class="number">2</span>)
+    hint = models.TextField(null=<span class="keyword">True</span>, blank=<span class="keyword">True</span>)
+    chapter = models.ForeignKey(Chapter)
+    image = models.ImageField(upload_to=<span class="string">'static/img/questions'</span>, null=<span class="keyword">True</span>, blank=<span class="keyword">True</span>)
+    created_at = models.DateTimeField(auto_now_add=<span class="keyword">True</span>)
+    updated_at = models.DateTimeField(auto_now=<span class="keyword">True</span>)
+
+    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span>
+        <span class="keyword">return</span> self.question_text
+
+<span class="decorator">@python_2_unicode_compatible</span>
+<span class="class"><span class="keyword">class</span> <span class="title">Choice</span><span class="params">(models.Model)</span>:</span>
+    question = models.ForeignKey(Question, related_name=<span class="string">'choices'</span>)
+    choice_text = models.CharField(max_length=<span class="number">200</span>)
+
+    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span>
+        <span class="keyword">return</span> self.choice_text
+</code></pre>
+<p>In order to make our code both python 2 and python 3 compatible we are importing <code>unicode_literals</code> and <code>python_2_unicode_compatible</code>. Read more about it at <a href="https://docs.djangoproject.com/en/1.8/topics/python3/#str-and-unicode-methods">django docs</a>.
+Sample value for above model would be like&nbsp;following.</p>
+<pre><code class="lang-json">{
+    "<span class="attribute">count</span>": <span class="value"><span class="number">2</span></span>,
+    "<span class="attribute">next</span>": <span class="value"><span class="literal">null</span></span>,
+    "<span class="attribute">previous</span>": <span class="value"><span class="literal">null</span></span>,
+    "<span class="attribute">results</span>": <span class="value">[
+        {
+            "<span class="attribute">pk</span>": <span class="value"><span class="number">4</span></span>,
+            "<span class="attribute">question_text</span>": <span class="value"><span class="string">"This is my 1<span class="ord">st</span> Question ?"</span></span>,
+            "<span class="attribute">answer</span>": <span class="value"><span class="string">"1"</span></span>,
+            "<span class="attribute">hint</span>": <span class="value"><span class="string">"Hint for question one !"</span></span>,
+            "<span class="attribute">chapter</span>": <span class="value">{
+                "<span class="attribute">url</span>": <span class="value"><span class="string">"http://powerful-gorge-4516.herokuapp.com/api/chapters/1/"</span></span>,
+                "<span class="attribute">name</span>": <span class="value"><span class="string">"Group D"</span></span>,
+                "<span class="attribute">unit</span>": <span class="value">{
+                    "<span class="attribute">url</span>": <span class="value"><span class="string">"http://powerful-gorge-4516.herokuapp.com/api/units/1/"</span></span>,
+                    "<span class="attribute">name</span>": <span class="value"><span class="string">"2"</span></span>,
+                    "<span class="attribute">subject</span>": <span class="value">{
+                        "<span class="attribute">url</span>": <span class="value"><span class="string">"http://powerful-gorge-4516.herokuapp.com/api/subjects/1/"</span></span>,
+                        "<span class="attribute">name</span>": <span class="value"><span class="string">"Chemistry "</span>
+                    </span>}
+                </span>}
+            </span>}</span>,
+            "<span class="attribute">image</span>": <span class="value"><span class="literal">null</span></span>,
+            "<span class="attribute">choices</span>": <span class="value">[
+                <span class="string">"D. None of the above is correct."</span>,
+                <span class="string">"C. Choice C for Q 1"</span>,
+                <span class="string">"B. Choice B for Q 1"</span>,
+                <span class="string">"A. Choice A for Q1"</span>
+            ]
+        </span>},
+        {
+            "<span class="attribute">pk</span>": <span class="value"><span class="number">5</span></span>,
+            "<span class="attribute">question_text</span>": <span class="value"><span class="string">"What is the work done by a man in carrying a suitcase weighing 30 kg over his head, when he travels 10 m in horizontal direction."</span></span>,
+            "<span class="attribute">answer</span>": <span class="value"><span class="string">"1"</span></span>,
+            "<span class="attribute">hint</span>": <span class="value"><span class="string">"This is pretty basic question. No help required?"</span></span>,
+            "<span class="attribute">chapter</span>": <span class="value">{
+                "<span class="attribute">url</span>": <span class="value"><span class="string">"http://powerful-gorge-4516.herokuapp.com/api/chapters/3/"</span></span>,
+                "<span class="attribute">name</span>": <span class="value"><span class="string">"Organic"</span></span>,
+                "<span class="attribute">unit</span>": <span class="value">{
+                    "<span class="attribute">url</span>": <span class="value"><span class="string">"http://powerful-gorge-4516.herokuapp.com/api/units/2/"</span></span>,
+                    "<span class="attribute">name</span>": <span class="value"><span class="string">"Polymers"</span></span>,
+                    "<span class="attribute">subject</span>": <span class="value">{
+                        "<span class="attribute">url</span>": <span class="value"><span class="string">"http://powerful-gorge-4516.herokuapp.com/api/subjects/1/"</span></span>,
+                        "<span class="attribute">name</span>": <span class="value"><span class="string">"Chemistry "</span>
+                    </span>}
+                </span>}
+            </span>}</span>,
+            "<span class="attribute">image</span>": <span class="value"><span class="literal">null</span></span>,
+            "<span class="attribute">choices</span>": <span class="value">[
+                <span class="string">"30 kJ"</span>,
+                <span class="string">"0"</span>,
+                <span class="string">"(\\ a \\ne 0 \\)"</span>,
+                <span class="string">"When $$a \\ne 0$$, there are two solutions to \\(ax^2 + bx + c = 0\\) and they are $$x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}.$$"</span>
+            ]
+        </span>}
+    ]
+</span>}
+</code></pre>
+<h3 id="serializers">Serializers</h3>
+<p>Create a new file <code>questions/serializers.py</code> and add the following&nbsp;code.</p>
+<pre><code class="lang-python"><span class="keyword">from</span> rest_framework <span class="keyword">import</span> serializers
+
+<span class="keyword">from</span> .models <span class="keyword">import</span> Question, Choice, Exam, Subject, Unit, Chapter
+
+<span class="class"><span class="keyword">class</span> <span class="title">QuestionSerializer</span><span class="params">(serializers.HyperlinkedModelSerializer)</span>:</span>
+    choices = serializers.StringRelatedField(many=<span class="keyword">True</span>)
+    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span>
+        model = Question
+        fields = (<span class="string">'pk'</span>, <span class="string">'question_text'</span>, <span class="string">'answer'</span>, <span class="string">'hint'</span>, <span class="string">'chapter'</span>, <span class="string">'image'</span>, <span class="string">'choices'</span>)
+        depth = <span class="number">3</span>
+
+<span class="class"><span class="keyword">class</span> <span class="title">ChoiceSerializer</span><span class="params">(serializers.HyperlinkedModelSerializer)</span>:</span>
+    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span>
+        model = Choice
+        fields = (<span class="string">'choice_text'</span>, <span class="string">'question'</span>)
+
+<span class="class"><span class="keyword">class</span> <span class="title">ExamSerializer</span><span class="params">(serializers.HyperlinkedModelSerializer)</span>:</span>
+    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span>
+        model = Exam
+        fields = (<span class="string">'name'</span>, <span class="string">'abbr'</span>, <span class="string">'description'</span>)
+
+<span class="class"><span class="keyword">class</span> <span class="title">SubjectSerializer</span><span class="params">(serializers.HyperlinkedModelSerializer)</span>:</span>
+    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span>
+        model = Subject
+        fields = (<span class="string">'name'</span>, )
+
+<span class="class"><span class="keyword">class</span> <span class="title">UnitSerializer</span><span class="params">(serializers.HyperlinkedModelSerializer)</span>:</span>
+    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span>
+        model = Unit
+        fields = (<span class="string">'name'</span>, <span class="string">'subject'</span>)
+
+<span class="class"><span class="keyword">class</span> <span class="title">ChapterSerializer</span><span class="params">(serializers.HyperlinkedModelSerializer)</span>:</span>
+    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span>
+        model = Chapter
+        fields = (<span class="string">'name'</span>, <span class="string">'unit'</span>)
+</code></pre>
+<p>In the above example we are creating json serializers for all the models we just created. They are subclass of <code>HyperlinkedModelSerializer</code> which need a model and its fields which we want to display. <code>QuestionSerializer</code> needs an extra field <code>depth</code> because it has parent foreign key i.e. <code>chapter</code>.</p>
+<h3 id="views">Views</h3>
+<p>Edit your <code>questions/views.py</code> file to add the following&nbsp;code.</p>
+<pre><code class="lang-python"><span class="keyword">from</span> datetime <span class="keyword">import</span> datetime, timedelta
+
+<span class="keyword">from</span> django.shortcuts <span class="keyword">import</span> render
+
+<span class="keyword">from</span> django.db.models <span class="keyword">import</span> Count
+<span class="keyword">from</span> django.views.generic.detail <span class="keyword">import</span> DetailView
+<span class="keyword">from</span> django.views.generic.edit <span class="keyword">import</span> UpdateView, CreateView, DeleteView
+<span class="keyword">from</span> django.views.generic.list <span class="keyword">import</span> ListView
+
+<span class="keyword">from</span> rest_framework.viewsets <span class="keyword">import</span> ModelViewSet
+<span class="keyword">from</span> rest_framework.renderers <span class="keyword">import</span> JSONRenderer
+<span class="keyword">from</span> rest_framework.response <span class="keyword">import</span> Response
+<span class="keyword">from</span> rest_framework.views <span class="keyword">import</span> APIView
+
+<span class="keyword">from</span> .serializers <span class="keyword">import</span> QuestionSerializer, ChoiceSerializer, ExamSerializer, UnitSerializer, ChapterSerializer, SubjectSerializer
+
+<span class="keyword">from</span> .models <span class="keyword">import</span> Question, Choice, Exam, Unit, Chapter, Subject
+
+<span class="class"><span class="keyword">class</span> <span class="title">QuestionDetail</span><span class="params">(DetailView)</span>:</span>
+    model = Question
+question_detail = QuestionDetail.as_view()
+
+<span class="class"><span class="keyword">class</span> <span class="title">QuestionList</span><span class="params">(ListView)</span>:</span>
+    model = Question
+question_list = QuestionList.as_view()
+
+<span class="class"><span class="keyword">class</span> <span class="title">QuestionViewSet</span><span class="params">(ModelViewSet)</span>:</span>
+    queryset = Question.objects.all()
+    serializer_class = QuestionSerializer
+
+<span class="class"><span class="keyword">class</span> <span class="title">ChoiceViewSet</span><span class="params">(ModelViewSet)</span>:</span>
+    queryset = Choice.objects.all()
+    serializer_class = ChoiceSerializer
+
+<span class="class"><span class="keyword">class</span> <span class="title">ExamViewSet</span><span class="params">(ModelViewSet)</span>:</span>
+    queryset = Exam.objects.all()
+    serializer_class = ExamSerializer
+
+<span class="class"><span class="keyword">class</span> <span class="title">SubjectViewSet</span><span class="params">(ModelViewSet)</span>:</span>
+    queryset = Subject.objects.all()
+    serializer_class = SubjectSerializer
+
+<span class="class"><span class="keyword">class</span> <span class="title">UnitViewSet</span><span class="params">(ModelViewSet)</span>:</span>
+    queryset = Unit.objects.all()
+    serializer_class = UnitSerializer
+
+<span class="class"><span class="keyword">class</span> <span class="title">ChapterViewSet</span><span class="params">(ModelViewSet)</span>:</span>
+    queryset = Chapter.objects.all()
+    serializer_class = ChapterSerializer
+</code></pre>
+<p>In the above code we have imported Django’s generic class views like <code>ListView</code>, <code>DetailView</code> and also from <code>django rest framework</code>. We are creating a <code>viewset</code> for each model and its <code>serializer</code>.</p>
+<p>That’s all for this part in the next part we will create templates and get started on the&nbsp;frontend.</p>
+</section>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class="content-wrap">
+        <div class="nav"><a href="/">« Full blog</a></div>
+        <section class="about"><p>This blog is maintained by <a href="http://shubhu.in">Shubhendu</a> and licensed under the <a href="http://opensource.org/licenses/MIT">MIT-license</a>.
+You can follow him on <a href="http://twitter.com/5hubhu">Twitter</a>. This source of the blog can be found on <a href="http://github.com/shubhendusaurabh">GitHub</a>.
+Thanks for reading.</p>
+<iframe data-aa='35799' src='//ad.a-ads.com/35799?size=120x60' scrolling='no' style='width:120px; height:60px; border:0px; padding:0;overflow:hidden' allowtransparency='true'></iframe>
+
+
+
+        </section>
+        <section class="copy">
+          <p>&copy; 2015 shubhu &mdash; powered by&nbsp;<a href="https://github.com/jnordberg/wintersmith">Wintersmith</a>
+          </p>
+        </section>
+      </div>
+    </footer>
+  </body>
+</html>

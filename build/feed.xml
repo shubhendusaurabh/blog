@@ -5,9 +5,451 @@
     <atom:link href="//feed.xml" rel="self" type="application/rss+xml"></atom:link>
     <link>/</link>
     <description>Ramblings of an immor(t)al demigod</description>
-    <pubDate>Sun, 02  Aug 2015 05:30:00 +0630</pubDate>
+    <pubDate>Tue, 11  Aug 2015 05:30:00 +0630</pubDate>
     <generator>Wintersmith - https://github.com/jnordberg/wintersmith</generator>
     <language>en</language>
+    <item>
+      <title>Django Tutorial 2 - Part 3</title>
+      <link>//articles/django-tutorial-2-part-3/</link>
+      <pubDate>Tue, 11  Aug 2015 05:30:00 +0630</pubDate>
+      <guid isPermaLink="true">//articles/django-tutorial-2-part-3/</guid>
+      <author></author>
+      <description>&lt;h3 id=&quot;templates&quot;&gt;Templates&lt;/h3&gt;
+&lt;p&gt;In this part we will being with frontend part.&lt;/p&gt;
+&lt;p&gt;Create a new folder &lt;code&gt;templates&lt;/code&gt; in both &lt;code&gt;testseries&lt;/code&gt; and &lt;code&gt;testseries/questions&lt;/code&gt;.
+In the root &lt;code&gt;templates&lt;/code&gt; folder create a new file &lt;code&gt;base.html&lt;/code&gt; and &lt;code&gt;scripts.html&lt;/code&gt;.
+In the &lt;code&gt;base.html&lt;/code&gt; file add the following lines of code.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-html&quot;&gt;{% load static %}{% load question_extras %}
+&lt;span class=&quot;doctype&quot;&gt;&amp;lt;!DOCTYPE html&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;html&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;ng-app&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;Questions&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;head&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;meta&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;charset&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;utf-8&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;title&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;ng-bind&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;title&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;title&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;link&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;rel&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;stylesheet&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;href&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;{% static 'css/bootstrap.min.css' %}&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;media&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;screen&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;charset&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;utf-8&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;link&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;rel&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;stylesheet&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;href&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;{% static 'css/styles.css' %}&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;media&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;screen&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;charset&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;utf-8&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;head&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;body&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;container&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+          &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;header&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;nav&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;navbar navbar-default&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+              &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;container-fluid&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;comment&quot;&gt;&amp;lt;!-- Brand and toggle get grouped for better mobile display --&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;navbar-header&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                  &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;button&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;type&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;button&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;navbar-toggle collapsed&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;data-toggle&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;collapse&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;data-target&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;#bs-example-navbar-collapse-1&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;aria-expanded&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;false&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;span&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;sr-only&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;Toggle navigation&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;span&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;span&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;icon-bar&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;span&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;span&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;icon-bar&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;span&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;span&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;icon-bar&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;span&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                  &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;button&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                  &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;navbar-brand&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;href&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;#&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;Brand&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+
+                &lt;span class=&quot;comment&quot;&gt;&amp;lt;!-- Collect the nav links, forms, and other content for toggling --&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;collapse navbar-collapse&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;id&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;bs-example-navbar-collapse-1&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                  &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;ul&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;nav navbar-nav&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;active&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;href&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;#&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;Link &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;span&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;sr-only&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;(current)&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;span&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;href&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;#&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;Link&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;dropdown&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                      &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;href&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;#&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;dropdown-toggle&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;data-toggle&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;dropdown&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;role&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;button&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;aria-haspopup&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;true&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;aria-expanded&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;false&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;Dropdown &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;span&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;caret&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;span&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                      &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;ul&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;dropdown-menu&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;href&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;#&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;Action&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;href&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;#&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;Another action&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;href&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;#&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;Something else here&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;role&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;separator&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;divider&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;href&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;#&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;Separated link&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;role&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;separator&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;divider&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;href&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;#&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;One more separated link&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                      &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;ul&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                    &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                  &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;ul&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                  &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;form&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;navbar-form navbar-left&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;role&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;search&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;form-group&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                      &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;input&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;type&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;text&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;form-control&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;placeholder&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;Search&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                    &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;button&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;type&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;submit&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;btn btn-default&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;Submit&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;button&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                  &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;form&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;comment&quot;&gt;&amp;lt;!-- /.navbar-collapse --&amp;gt;&lt;/span&gt;
+              &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;comment&quot;&gt;&amp;lt;!-- /.container-fluid --&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;nav&lt;/span&gt;&amp;gt;&lt;/span&gt;
+          &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;header&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;container&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            {% block content %}
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;ng-view&lt;/span&gt;&amp;gt;&lt;/span&gt;
+
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            {% endblock content %}
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        {% load_scripts %}
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;script&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;src&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;{% static 'js/app.js' %}&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;undefined&quot;&gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;script&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;script&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;src&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;{% static 'js/controllers.js' %}&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;undefined&quot;&gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;script&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;script&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;src&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;{% static 'js/services.js' %}&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;undefined&quot;&gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;script&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;script&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;src&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;{% static 'js/directives.js' %}&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;undefined&quot;&gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;script&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;body&lt;/span&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;html&lt;/span&gt;&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;It is a pretty basic layout in which we are styling using &lt;a href=&quot;http://getbootstrap.com/&quot;&gt;Twitter Bootstrap&lt;/a&gt;.
+We are using AngularJS so it contains &lt;code&gt;ng-view&lt;/code&gt; directive. We are also loading bunch of angular scripts at the end.&lt;/p&gt;
+&lt;p&gt;In the &lt;code&gt;questions/templates/questions&lt;/code&gt; folder create new files &lt;code&gt;question_list.html&lt;/code&gt; and &lt;code&gt;quesiton_detail.html&lt;/code&gt;.
+In the &lt;code&gt;question_list.html&lt;/code&gt; file add the following content.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-html&quot;&gt;{% extends 'base.html' %}
+
+{% block content %}
+&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;row&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;col-lg-12&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;list-group&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            {% for question in question_list %}
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;href&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;{% url 'question_detail' question.id %}&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;list-group-item&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                {{ question.question_text }}
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;a&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            {% endfor %}
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+{% endblock content %}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And in the &lt;code&gt;testseries/questions/templates/questions/question_detail.html&lt;/code&gt; file add the following content.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-html&quot;&gt;{% extends 'base.html' %}
+
+{% block content %}
+&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;row&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;h2&lt;/span&gt;&amp;gt;&lt;/span&gt;{{ question.question_text }}&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;h2&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;p&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        {{ question.get_sisubject }}
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;p&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;ul&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        {% for choice in question.choices.all %}
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;{{ choice.choice_text }}&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        {% endfor %}
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;ul&lt;/span&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+{% endblock %}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Although we have added templates to be generated by &lt;code&gt;Django&lt;/code&gt;, we will be using &lt;code&gt;AngularJS&lt;/code&gt; version which we will cover in next part.&lt;/p&gt;
+</description>
+    </item>
+    <item>
+      <title>Django Tutorial 2 - Part 2</title>
+      <link>//articles/django-tutorial-2-part-2/</link>
+      <pubDate>Sat, 08  Aug 2015 05:30:00 +0630</pubDate>
+      <guid isPermaLink="true">//articles/django-tutorial-2-part-2/</guid>
+      <author></author>
+      <description>&lt;h3 id=&quot;questions-app&quot;&gt;Questions app&lt;/h3&gt;
+&lt;p&gt;In previous part we initialized django project with database settings and various configurations.
+So lets begin with creating models and views for the app.&lt;/p&gt;
+&lt;h3 id=&quot;models&quot;&gt;Models&lt;/h3&gt;
+&lt;p&gt;Open &lt;code&gt;questions/models.py&lt;/code&gt; file and add the following code.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-python&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;from&lt;/span&gt; __future__ &lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; unicode_literals
+&lt;span class=&quot;keyword&quot;&gt;from&lt;/span&gt; django.utils.encoding &lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; python_2_unicode_compatible
+
+&lt;span class=&quot;keyword&quot;&gt;from&lt;/span&gt; django.db &lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; models
+
+&lt;span class=&quot;decorator&quot;&gt;@python_2_unicode_compatible&lt;/span&gt;
+&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;Exam&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(models.Model)&lt;/span&gt;:&lt;/span&gt;
+    name = models.CharField(max_length=&lt;span class=&quot;number&quot;&gt;100&lt;/span&gt;)
+    abbr = models.CharField(max_length=&lt;span class=&quot;number&quot;&gt;10&lt;/span&gt;)
+    description = models.TextField(blank=&lt;span class=&quot;keyword&quot;&gt;True&lt;/span&gt;)
+    created_at = models.DateTimeField(auto_now_add=&lt;span class=&quot;keyword&quot;&gt;True&lt;/span&gt;)
+    updated_at = models.DateTimeField(auto_now=&lt;span class=&quot;keyword&quot;&gt;True&lt;/span&gt;)
+
+    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;__str__&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(self)&lt;/span&gt;:&lt;/span&gt;
+        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; self.name
+
+&lt;span class=&quot;decorator&quot;&gt;@python_2_unicode_compatible&lt;/span&gt;
+&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;Subject&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(models.Model)&lt;/span&gt;:&lt;/span&gt;
+    name = models.CharField(max_length=&lt;span class=&quot;number&quot;&gt;50&lt;/span&gt;)
+
+    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;__str__&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(self)&lt;/span&gt;:&lt;/span&gt;
+        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; self.name
+
+&lt;span class=&quot;decorator&quot;&gt;@python_2_unicode_compatible&lt;/span&gt;
+&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;Unit&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(models.Model)&lt;/span&gt;:&lt;/span&gt;
+    name = models.CharField(max_length=&lt;span class=&quot;number&quot;&gt;100&lt;/span&gt;)
+    subject = models.ForeignKey(Subject)
+
+    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;__str__&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(self)&lt;/span&gt;:&lt;/span&gt;
+        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; self.name
+
+&lt;span class=&quot;decorator&quot;&gt;@python_2_unicode_compatible&lt;/span&gt;
+&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;Chapter&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(models.Model)&lt;/span&gt;:&lt;/span&gt;
+    name = models.CharField(max_length=&lt;span class=&quot;number&quot;&gt;100&lt;/span&gt;)
+    unit = models.ForeignKey(Unit)
+
+    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;__str__&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(self)&lt;/span&gt;:&lt;/span&gt;
+        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; self.name
+
+&lt;span class=&quot;decorator&quot;&gt;@python_2_unicode_compatible&lt;/span&gt;
+&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;Question&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(models.Model)&lt;/span&gt;:&lt;/span&gt;
+    question_text = models.TextField()
+    answer = models.CharField(max_length=&lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;)
+    hint = models.TextField(null=&lt;span class=&quot;keyword&quot;&gt;True&lt;/span&gt;, blank=&lt;span class=&quot;keyword&quot;&gt;True&lt;/span&gt;)
+    chapter = models.ForeignKey(Chapter)
+    image = models.ImageField(upload_to=&lt;span class=&quot;string&quot;&gt;'static/img/questions'&lt;/span&gt;, null=&lt;span class=&quot;keyword&quot;&gt;True&lt;/span&gt;, blank=&lt;span class=&quot;keyword&quot;&gt;True&lt;/span&gt;)
+    created_at = models.DateTimeField(auto_now_add=&lt;span class=&quot;keyword&quot;&gt;True&lt;/span&gt;)
+    updated_at = models.DateTimeField(auto_now=&lt;span class=&quot;keyword&quot;&gt;True&lt;/span&gt;)
+
+    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;__str__&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(self)&lt;/span&gt;:&lt;/span&gt;
+        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; self.question_text
+
+&lt;span class=&quot;decorator&quot;&gt;@python_2_unicode_compatible&lt;/span&gt;
+&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;Choice&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(models.Model)&lt;/span&gt;:&lt;/span&gt;
+    question = models.ForeignKey(Question, related_name=&lt;span class=&quot;string&quot;&gt;'choices'&lt;/span&gt;)
+    choice_text = models.CharField(max_length=&lt;span class=&quot;number&quot;&gt;200&lt;/span&gt;)
+
+    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;__str__&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(self)&lt;/span&gt;:&lt;/span&gt;
+        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; self.choice_text
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In order to make our code both python 2 and python 3 compatible we are importing &lt;code&gt;unicode_literals&lt;/code&gt; and &lt;code&gt;python_2_unicode_compatible&lt;/code&gt;. Read more about it at &lt;a href=&quot;https://docs.djangoproject.com/en/1.8/topics/python3/#str-and-unicode-methods&quot;&gt;django docs&lt;/a&gt;.
+Sample value for above model would be like following.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-json&quot;&gt;{
+    &quot;&lt;span class=&quot;attribute&quot;&gt;count&lt;/span&gt;&quot;: &lt;span class=&quot;value&quot;&gt;&lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;&lt;/span&gt;,
+    &quot;&lt;span class=&quot;attribute&quot;&gt;next&lt;/span&gt;&quot;: &lt;span class=&quot;value&quot;&gt;&lt;span class=&quot;literal&quot;&gt;null&lt;/span&gt;&lt;/span&gt;,
+    &quot;&lt;span class=&quot;attribute&quot;&gt;previous&lt;/span&gt;&quot;: &lt;span class=&quot;value&quot;&gt;&lt;span class=&quot;literal&quot;&gt;null&lt;/span&gt;&lt;/span&gt;,
+    &quot;&lt;span class=&quot;attribute&quot;&gt;results&lt;/span&gt;&quot;: &lt;span class=&quot;value&quot;&gt;[
+        {
+            &quot;&lt;span class=&quot;attribute&quot;&gt;pk&lt;/span&gt;&quot;: &lt;span class=&quot;value&quot;&gt;&lt;span class=&quot;number&quot;&gt;4&lt;/span&gt;&lt;/span&gt;,
+            &quot;&lt;span class=&quot;attribute&quot;&gt;question_text&lt;/span&gt;&quot;: &lt;span class=&quot;value&quot;&gt;&lt;span class=&quot;string&quot;&gt;&quot;This is my 1st Question ?&quot;&lt;/span&gt;&lt;/span&gt;,
+            &quot;&lt;span class=&quot;attribute&quot;&gt;answer&lt;/span&gt;&quot;: &lt;span class=&quot;value&quot;&gt;&lt;span class=&quot;string&quot;&gt;&quot;1&quot;&lt;/span&gt;&lt;/span&gt;,
+            &quot;&lt;span class=&quot;attribute&quot;&gt;hint&lt;/span&gt;&quot;: &lt;span class=&quot;value&quot;&gt;&lt;span class=&quot;string&quot;&gt;&quot;Hint for question one !&quot;&lt;/span&gt;&lt;/span&gt;,
+            &quot;&lt;span class=&quot;attribute&quot;&gt;chapter&lt;/span&gt;&quot;: &lt;span class=&quot;value&quot;&gt;{
+                &quot;&lt;span class=&quot;attribute&quot;&gt;url&lt;/span&gt;&quot;: &lt;span class=&quot;value&quot;&gt;&lt;span class=&quot;string&quot;&gt;&quot;http://powerful-gorge-4516.herokuapp.com/api/chapters/1/&quot;&lt;/span&gt;&lt;/span&gt;,
+                &quot;&lt;span class=&quot;attribute&quot;&gt;name&lt;/span&gt;&quot;: &lt;span class=&quot;value&quot;&gt;&lt;span class=&quot;string&quot;&gt;&quot;Group D&quot;&lt;/span&gt;&lt;/span&gt;,
+                &quot;&lt;span class=&quot;attribute&quot;&gt;unit&lt;/span&gt;&quot;: &lt;span class=&quot;value&quot;&gt;{
+                    &quot;&lt;span class=&quot;attribute&quot;&gt;url&lt;/span&gt;&quot;: &lt;span class=&quot;value&quot;&gt;&lt;span class=&quot;string&quot;&gt;&quot;http://powerful-gorge-4516.herokuapp.com/api/units/1/&quot;&lt;/span&gt;&lt;/span&gt;,
+                    &quot;&lt;span class=&quot;attribute&quot;&gt;name&lt;/span&gt;&quot;: &lt;span class=&quot;value&quot;&gt;&lt;span class=&quot;string&quot;&gt;&quot;2&quot;&lt;/span&gt;&lt;/span&gt;,
+                    &quot;&lt;span class=&quot;attribute&quot;&gt;subject&lt;/span&gt;&quot;: &lt;span class=&quot;value&quot;&gt;{
+                        &quot;&lt;span class=&quot;attribute&quot;&gt;url&lt;/span&gt;&quot;: &lt;span class=&quot;value&quot;&gt;&lt;span class=&quot;string&quot;&gt;&quot;http://powerful-gorge-4516.herokuapp.com/api/subjects/1/&quot;&lt;/span&gt;&lt;/span&gt;,
+                        &quot;&lt;span class=&quot;attribute&quot;&gt;name&lt;/span&gt;&quot;: &lt;span class=&quot;value&quot;&gt;&lt;span class=&quot;string&quot;&gt;&quot;Chemistry &quot;&lt;/span&gt;
+                    &lt;/span&gt;}
+                &lt;/span&gt;}
+            &lt;/span&gt;}&lt;/span&gt;,
+            &quot;&lt;span class=&quot;attribute&quot;&gt;image&lt;/span&gt;&quot;: &lt;span class=&quot;value&quot;&gt;&lt;span class=&quot;literal&quot;&gt;null&lt;/span&gt;&lt;/span&gt;,
+            &quot;&lt;span class=&quot;attribute&quot;&gt;choices&lt;/span&gt;&quot;: &lt;span class=&quot;value&quot;&gt;[
+                &lt;span class=&quot;string&quot;&gt;&quot;D. None of the above is correct.&quot;&lt;/span&gt;,
+                &lt;span class=&quot;string&quot;&gt;&quot;C. Choice C for Q 1&quot;&lt;/span&gt;,
+                &lt;span class=&quot;string&quot;&gt;&quot;B. Choice B for Q 1&quot;&lt;/span&gt;,
+                &lt;span class=&quot;string&quot;&gt;&quot;A. Choice A for Q1&quot;&lt;/span&gt;
+            ]
+        &lt;/span&gt;},
+        {
+            &quot;&lt;span class=&quot;attribute&quot;&gt;pk&lt;/span&gt;&quot;: &lt;span class=&quot;value&quot;&gt;&lt;span class=&quot;number&quot;&gt;5&lt;/span&gt;&lt;/span&gt;,
+            &quot;&lt;span class=&quot;attribute&quot;&gt;question_text&lt;/span&gt;&quot;: &lt;span class=&quot;value&quot;&gt;&lt;span class=&quot;string&quot;&gt;&quot;What is the work done by a man in carrying a suitcase weighing 30 kg over his head, when he travels 10 m in horizontal direction.&quot;&lt;/span&gt;&lt;/span&gt;,
+            &quot;&lt;span class=&quot;attribute&quot;&gt;answer&lt;/span&gt;&quot;: &lt;span class=&quot;value&quot;&gt;&lt;span class=&quot;string&quot;&gt;&quot;1&quot;&lt;/span&gt;&lt;/span&gt;,
+            &quot;&lt;span class=&quot;attribute&quot;&gt;hint&lt;/span&gt;&quot;: &lt;span class=&quot;value&quot;&gt;&lt;span class=&quot;string&quot;&gt;&quot;This is pretty basic question. No help required?&quot;&lt;/span&gt;&lt;/span&gt;,
+            &quot;&lt;span class=&quot;attribute&quot;&gt;chapter&lt;/span&gt;&quot;: &lt;span class=&quot;value&quot;&gt;{
+                &quot;&lt;span class=&quot;attribute&quot;&gt;url&lt;/span&gt;&quot;: &lt;span class=&quot;value&quot;&gt;&lt;span class=&quot;string&quot;&gt;&quot;http://powerful-gorge-4516.herokuapp.com/api/chapters/3/&quot;&lt;/span&gt;&lt;/span&gt;,
+                &quot;&lt;span class=&quot;attribute&quot;&gt;name&lt;/span&gt;&quot;: &lt;span class=&quot;value&quot;&gt;&lt;span class=&quot;string&quot;&gt;&quot;Organic&quot;&lt;/span&gt;&lt;/span&gt;,
+                &quot;&lt;span class=&quot;attribute&quot;&gt;unit&lt;/span&gt;&quot;: &lt;span class=&quot;value&quot;&gt;{
+                    &quot;&lt;span class=&quot;attribute&quot;&gt;url&lt;/span&gt;&quot;: &lt;span class=&quot;value&quot;&gt;&lt;span class=&quot;string&quot;&gt;&quot;http://powerful-gorge-4516.herokuapp.com/api/units/2/&quot;&lt;/span&gt;&lt;/span&gt;,
+                    &quot;&lt;span class=&quot;attribute&quot;&gt;name&lt;/span&gt;&quot;: &lt;span class=&quot;value&quot;&gt;&lt;span class=&quot;string&quot;&gt;&quot;Polymers&quot;&lt;/span&gt;&lt;/span&gt;,
+                    &quot;&lt;span class=&quot;attribute&quot;&gt;subject&lt;/span&gt;&quot;: &lt;span class=&quot;value&quot;&gt;{
+                        &quot;&lt;span class=&quot;attribute&quot;&gt;url&lt;/span&gt;&quot;: &lt;span class=&quot;value&quot;&gt;&lt;span class=&quot;string&quot;&gt;&quot;http://powerful-gorge-4516.herokuapp.com/api/subjects/1/&quot;&lt;/span&gt;&lt;/span&gt;,
+                        &quot;&lt;span class=&quot;attribute&quot;&gt;name&lt;/span&gt;&quot;: &lt;span class=&quot;value&quot;&gt;&lt;span class=&quot;string&quot;&gt;&quot;Chemistry &quot;&lt;/span&gt;
+                    &lt;/span&gt;}
+                &lt;/span&gt;}
+            &lt;/span&gt;}&lt;/span&gt;,
+            &quot;&lt;span class=&quot;attribute&quot;&gt;image&lt;/span&gt;&quot;: &lt;span class=&quot;value&quot;&gt;&lt;span class=&quot;literal&quot;&gt;null&lt;/span&gt;&lt;/span&gt;,
+            &quot;&lt;span class=&quot;attribute&quot;&gt;choices&lt;/span&gt;&quot;: &lt;span class=&quot;value&quot;&gt;[
+                &lt;span class=&quot;string&quot;&gt;&quot;30 kJ&quot;&lt;/span&gt;,
+                &lt;span class=&quot;string&quot;&gt;&quot;0&quot;&lt;/span&gt;,
+                &lt;span class=&quot;string&quot;&gt;&quot;(\\ a \\ne 0 \\)&quot;&lt;/span&gt;,
+                &lt;span class=&quot;string&quot;&gt;&quot;When $$a \\ne 0$$, there are two solutions to \\(ax^2 + bx + c = 0\\) and they are $$x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}.$$&quot;&lt;/span&gt;
+            ]
+        &lt;/span&gt;}
+    ]
+&lt;/span&gt;}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&quot;serializers&quot;&gt;Serializers&lt;/h3&gt;
+&lt;p&gt;Create a new file &lt;code&gt;questions/serializers.py&lt;/code&gt; and add the following code.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-python&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;from&lt;/span&gt; rest_framework &lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; serializers
+
+&lt;span class=&quot;keyword&quot;&gt;from&lt;/span&gt; .models &lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; Question, Choice, Exam, Subject, Unit, Chapter
+
+&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;QuestionSerializer&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(serializers.HyperlinkedModelSerializer)&lt;/span&gt;:&lt;/span&gt;
+    choices = serializers.StringRelatedField(many=&lt;span class=&quot;keyword&quot;&gt;True&lt;/span&gt;)
+    &lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;Meta&lt;/span&gt;:&lt;/span&gt;
+        model = Question
+        fields = (&lt;span class=&quot;string&quot;&gt;'pk'&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;'question_text'&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;'answer'&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;'hint'&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;'chapter'&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;'image'&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;'choices'&lt;/span&gt;)
+        depth = &lt;span class=&quot;number&quot;&gt;3&lt;/span&gt;
+
+&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;ChoiceSerializer&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(serializers.HyperlinkedModelSerializer)&lt;/span&gt;:&lt;/span&gt;
+    &lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;Meta&lt;/span&gt;:&lt;/span&gt;
+        model = Choice
+        fields = (&lt;span class=&quot;string&quot;&gt;'choice_text'&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;'question'&lt;/span&gt;)
+
+&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;ExamSerializer&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(serializers.HyperlinkedModelSerializer)&lt;/span&gt;:&lt;/span&gt;
+    &lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;Meta&lt;/span&gt;:&lt;/span&gt;
+        model = Exam
+        fields = (&lt;span class=&quot;string&quot;&gt;'name'&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;'abbr'&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;'description'&lt;/span&gt;)
+
+&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;SubjectSerializer&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(serializers.HyperlinkedModelSerializer)&lt;/span&gt;:&lt;/span&gt;
+    &lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;Meta&lt;/span&gt;:&lt;/span&gt;
+        model = Subject
+        fields = (&lt;span class=&quot;string&quot;&gt;'name'&lt;/span&gt;, )
+
+&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;UnitSerializer&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(serializers.HyperlinkedModelSerializer)&lt;/span&gt;:&lt;/span&gt;
+    &lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;Meta&lt;/span&gt;:&lt;/span&gt;
+        model = Unit
+        fields = (&lt;span class=&quot;string&quot;&gt;'name'&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;'subject'&lt;/span&gt;)
+
+&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;ChapterSerializer&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(serializers.HyperlinkedModelSerializer)&lt;/span&gt;:&lt;/span&gt;
+    &lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;Meta&lt;/span&gt;:&lt;/span&gt;
+        model = Chapter
+        fields = (&lt;span class=&quot;string&quot;&gt;'name'&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;'unit'&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In the above example we are creating json serializers for all the models we just created. They are subclass of &lt;code&gt;HyperlinkedModelSerializer&lt;/code&gt; which need a model and its fields which we want to display. &lt;code&gt;QuestionSerializer&lt;/code&gt; needs an extra field &lt;code&gt;depth&lt;/code&gt; because it has parent foreign key i.e. &lt;code&gt;chapter&lt;/code&gt;.&lt;/p&gt;
+&lt;h3 id=&quot;views&quot;&gt;Views&lt;/h3&gt;
+&lt;p&gt;Edit your &lt;code&gt;questions/views.py&lt;/code&gt; file to add the following code.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-python&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;from&lt;/span&gt; datetime &lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; datetime, timedelta
+
+&lt;span class=&quot;keyword&quot;&gt;from&lt;/span&gt; django.shortcuts &lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; render
+
+&lt;span class=&quot;keyword&quot;&gt;from&lt;/span&gt; django.db.models &lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; Count
+&lt;span class=&quot;keyword&quot;&gt;from&lt;/span&gt; django.views.generic.detail &lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; DetailView
+&lt;span class=&quot;keyword&quot;&gt;from&lt;/span&gt; django.views.generic.edit &lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; UpdateView, CreateView, DeleteView
+&lt;span class=&quot;keyword&quot;&gt;from&lt;/span&gt; django.views.generic.list &lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; ListView
+
+&lt;span class=&quot;keyword&quot;&gt;from&lt;/span&gt; rest_framework.viewsets &lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; ModelViewSet
+&lt;span class=&quot;keyword&quot;&gt;from&lt;/span&gt; rest_framework.renderers &lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; JSONRenderer
+&lt;span class=&quot;keyword&quot;&gt;from&lt;/span&gt; rest_framework.response &lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; Response
+&lt;span class=&quot;keyword&quot;&gt;from&lt;/span&gt; rest_framework.views &lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; APIView
+
+&lt;span class=&quot;keyword&quot;&gt;from&lt;/span&gt; .serializers &lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; QuestionSerializer, ChoiceSerializer, ExamSerializer, UnitSerializer, ChapterSerializer, SubjectSerializer
+
+&lt;span class=&quot;keyword&quot;&gt;from&lt;/span&gt; .models &lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; Question, Choice, Exam, Unit, Chapter, Subject
+
+&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;QuestionDetail&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(DetailView)&lt;/span&gt;:&lt;/span&gt;
+    model = Question
+question_detail = QuestionDetail.as_view()
+
+&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;QuestionList&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(ListView)&lt;/span&gt;:&lt;/span&gt;
+    model = Question
+question_list = QuestionList.as_view()
+
+&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;QuestionViewSet&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(ModelViewSet)&lt;/span&gt;:&lt;/span&gt;
+    queryset = Question.objects.all()
+    serializer_class = QuestionSerializer
+
+&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;ChoiceViewSet&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(ModelViewSet)&lt;/span&gt;:&lt;/span&gt;
+    queryset = Choice.objects.all()
+    serializer_class = ChoiceSerializer
+
+&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;ExamViewSet&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(ModelViewSet)&lt;/span&gt;:&lt;/span&gt;
+    queryset = Exam.objects.all()
+    serializer_class = ExamSerializer
+
+&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;SubjectViewSet&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(ModelViewSet)&lt;/span&gt;:&lt;/span&gt;
+    queryset = Subject.objects.all()
+    serializer_class = SubjectSerializer
+
+&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;UnitViewSet&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(ModelViewSet)&lt;/span&gt;:&lt;/span&gt;
+    queryset = Unit.objects.all()
+    serializer_class = UnitSerializer
+
+&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;ChapterViewSet&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(ModelViewSet)&lt;/span&gt;:&lt;/span&gt;
+    queryset = Chapter.objects.all()
+    serializer_class = ChapterSerializer
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In the above code we have imported Django’s generic class views like &lt;code&gt;ListView&lt;/code&gt;, &lt;code&gt;DetailView&lt;/code&gt; and also from &lt;code&gt;django rest framework&lt;/code&gt;. We are creating a &lt;code&gt;viewset&lt;/code&gt; for each model and its &lt;code&gt;serializer&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;That’s all for this part in the next part we will create templates and get started on the frontend.&lt;/p&gt;
+</description>
+    </item>
+    <item>
+      <title>Django Tutorial 2 - Part 1</title>
+      <link>//articles/django-tutorial-2-part-1/</link>
+      <pubDate>Wed, 05  Aug 2015 05:30:00 +0630</pubDate>
+      <guid isPermaLink="true">//articles/django-tutorial-2-part-1/</guid>
+      <author></author>
+      <description>&lt;p&gt;Welcome to Second hands on Django Tutorial. In this part we will make a testseries application. We will develop the backend using django and django-rest-framework while for the frontend will be developed in AngularJS.&lt;/p&gt;
+&lt;p&gt;This series is work in progress, so it make take a while before application is completed.&lt;/p&gt;
+&lt;h3 id=&quot;prerequitese&quot;&gt;Prerequitese&lt;/h3&gt;
+&lt;p&gt;Along with Django this project also requires bower to be installed and uses sqlite as database.&lt;/p&gt;
+&lt;p&gt;As usual create a new django project in virtualenv using virtualenvwrapper.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-bash&quot;&gt;mkvirtualenv testseries
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In the newly created project install following dependencies.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Django==1.8.2
+Pillow==2.9.0
+argparse==1.2.1
+dj-database-url==0.3.0
+dj-static==0.0.6
+django-debug-toolbar==1.3.2
+django-extensions==1.5.5
+django-toolbelt==0.0.1
+djangorestframework==3.1.3
+gunicorn==19.3.0
+psycopg2==2.6.1
+six==1.9.0
+sqlparse==0.1.15
+static3==0.6.1
+wsgiref==0.1.2
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Apply the following changes to &lt;code&gt;testseries/settings.py&lt;/code&gt; file&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-python&quot;&gt;-SECRET_KEY = &lt;span class=&quot;string&quot;&gt;'kw_z-k_7yz$owwel0afiu5vd_q1a@(iub_to_u*&amp;amp;hjjt@4y4yy'&lt;/span&gt;
++&lt;span class=&quot;keyword&quot;&gt;from&lt;/span&gt; django.core.exceptions &lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; ImproperlyConfigured
++
++&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;get_env_variable&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(var_name)&lt;/span&gt;:&lt;/span&gt;
++    &lt;span class=&quot;keyword&quot;&gt;try&lt;/span&gt;:
++        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; os.environ[var_name]
++    &lt;span class=&quot;keyword&quot;&gt;except&lt;/span&gt; KeyError:
++        error_msg = &lt;span class=&quot;string&quot;&gt;&quot;Set the %s env variable&quot;&lt;/span&gt; % var_name
++        &lt;span class=&quot;keyword&quot;&gt;raise&lt;/span&gt; ImproperlyConfigured(error_msg)
++
++SECRET_KEY = get_env_variable(&lt;span class=&quot;string&quot;&gt;'SECRET_KEY'&lt;/span&gt;)
+
+-DEBUG = &lt;span class=&quot;keyword&quot;&gt;True&lt;/span&gt;
++DEBUG = &lt;span class=&quot;keyword&quot;&gt;False&lt;/span&gt;
++TEMPLATE_DEBUG = &lt;span class=&quot;keyword&quot;&gt;False&lt;/span&gt;
+
++STATICFILES_DIRS = (
++    os.path.join(BASE_DIR, &lt;span class=&quot;string&quot;&gt;&quot;static&quot;&lt;/span&gt;),
++)
++
++TEMPLATE_DIRS = (
++    os.path.join(BASE_DIR, &lt;span class=&quot;string&quot;&gt;'templates'&lt;/span&gt;),
++)
++
++SITE_ID = &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;
++
++INTERNAL_IPS = (&lt;span class=&quot;string&quot;&gt;'127.0.0.1'&lt;/span&gt;,)
++
++&lt;span class=&quot;comment&quot;&gt;# List of callables that know how to import templates from various sources.&lt;/span&gt;
++TEMPLATE_LOADERS = (
++    &lt;span class=&quot;string&quot;&gt;'django.template.loaders.filesystem.Loader'&lt;/span&gt;,
++    &lt;span class=&quot;string&quot;&gt;'django.template.loaders.app_directories.Loader'&lt;/span&gt;,
++    &lt;span class=&quot;string&quot;&gt;'django.template.loaders.eggs.Loader'&lt;/span&gt;,
++)
++
++TEMPLATE_CONTEXT_PROCESSORS = (
++    &lt;span class=&quot;string&quot;&gt;'django.contrib.auth.context_processors.auth'&lt;/span&gt;,
++    &lt;span class=&quot;string&quot;&gt;'django.core.context_processors.request'&lt;/span&gt;,
++  
++)
++
++&lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; get_env_variable(&lt;span class=&quot;string&quot;&gt;'DEVELOPMENT'&lt;/span&gt;) == &lt;span class=&quot;string&quot;&gt;'True'&lt;/span&gt;:
++
++    INSTALLED_APPS += (&lt;span class=&quot;string&quot;&gt;'debug_toolbar'&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;'django_extensions'&lt;/span&gt;, )
++
++    MIDDLEWARE_CLASSES += (&lt;span class=&quot;string&quot;&gt;'debug_toolbar.middleware.DebugToolbarMiddleware'&lt;/span&gt;, )
++
++    INTERNAL_IPS = (&lt;span class=&quot;string&quot;&gt;'127.0.0.1'&lt;/span&gt;, )
++
++    DEBUG = &lt;span class=&quot;keyword&quot;&gt;True&lt;/span&gt;
++
++    TEMPLATE_DEBUG = &lt;span class=&quot;keyword&quot;&gt;True&lt;/span&gt;
++
++    DATABASES = {
++        &lt;span class=&quot;string&quot;&gt;'default'&lt;/span&gt;: {
++            &lt;span class=&quot;string&quot;&gt;'ENGINE'&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;'django.db.backends.sqlite3'&lt;/span&gt;,
++            &lt;span class=&quot;string&quot;&gt;'NAME'&lt;/span&gt;: os.path.join(BASE_DIR, &lt;span class=&quot;string&quot;&gt;'db.sqlite3'&lt;/span&gt;),
++        }
++    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Since we are loading &lt;code&gt;SECRET_KEY&lt;/code&gt; and &lt;code&gt;DEVELOPMENT&lt;/code&gt; values from environment variables we need to run,
+&lt;code&gt;export SECRET_KEY=&amp;#39;&amp;lt;KEY_HERE&amp;gt;&amp;#39;&lt;/code&gt; and &lt;code&gt;export DEVELOPMENT=&amp;#39;True&amp;#39;&lt;/code&gt; if on linux otherwise replace &lt;code&gt;export&lt;/code&gt; with &lt;code&gt;SET&lt;/code&gt; before running &lt;code&gt;python manage.py runserver&lt;/code&gt;. 
+Next run &lt;code&gt;python manage.py migrate&lt;/code&gt; to setup initial tables and then run &lt;code&gt;python createapp questions&lt;/code&gt; to initailize new app.&lt;/p&gt;
+&lt;p&gt;With the django project initialized, next we will start working on questions app.&lt;/p&gt;
+</description>
+    </item>
     <item>
       <title>Django Tutorial - Part 4</title>
       <link>//articles/django-tutorial-part-4/</link>

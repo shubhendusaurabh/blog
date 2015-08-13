@@ -31,94 +31,444 @@
       <div class="content-wrap">
         <article class="article intro">
           <header>
-            <p class="date"><span>02. August 2015</span></p>
-            <h2><a href="/articles/django-tutorial-part-4/">Django Tutorial - Part 4</a></h2>
+            <p class="date"><span>11. August 2015</span></p>
+            <h2><a href="/articles/django-tutorial-2-part-3/">Django Tutorial 2 - Part 3</a></h2>
           </header>
-          <section class="content"><p>Welcome to part 4 of Django Tutorial. In this part we will create feeds and&nbsp;sitemaps.</p>
-<h3 id="rss-feeds"><span class="caps">RSS</span>&nbsp;Feeds</h3>
-<p>Create charts/feeds.py file.
-Add the following&nbsp;code.</p>
-<pre><code class="lang-python"><span class="keyword">from</span> django.contrib.syndication.views <span class="keyword">import</span> Feed
-<span class="keyword">from</span> .models <span class="keyword">import</span> Chart
+          <section class="content"><h3 id="templates">Templates</h3>
+<p>In this part we will being with frontend&nbsp;part.</p>
+<p>Create a new folder <code>templates</code> in both <code>testseries</code> and <code>testseries/questions</code>.
+In the root <code>templates</code> folder create a new file <code>base.html</code> and <code>scripts.html</code>.
+In the <code>base.html</code> file add the following lines of&nbsp;code.</p>
+<pre><code class="lang-html">{% load static %}{% load question_extras %}
+<span class="doctype">&lt;!<span class="caps">DOCTYPE</span> html&gt;</span>
+<span class="tag">&lt;<span class="title">html</span> <span class="attribute">ng-app</span>=<span class="value">"Questions"</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">head</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">meta</span> <span class="attribute">charset</span>=<span class="value">"utf-8"</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">title</span> <span class="attribute">ng-bind</span>=<span class="value">"title"</span>&gt;</span><span class="tag">&lt;/<span class="title">title</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">"stylesheet"</span> <span class="attribute">href</span>=<span class="value">"{% static 'css/bootstrap.min.css' %}"</span> <span class="attribute">media</span>=<span class="value">"screen"</span> <span class="attribute">charset</span>=<span class="value">"utf-8"</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">"stylesheet"</span> <span class="attribute">href</span>=<span class="value">"{% static 'css/styles.css' %}"</span> <span class="attribute">media</span>=<span class="value">"screen"</span> <span class="attribute">charset</span>=<span class="value">"utf-8"</span>&gt;</span>
+    <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">body</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"container"</span>&gt;</span>
+          <span class="tag">&lt;<span class="title">header</span>&gt;</span>
+            <span class="tag">&lt;<span class="title">nav</span> <span class="attribute">class</span>=<span class="value">"navbar navbar-default"</span>&gt;</span>
+              <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"container-fluid"</span>&gt;</span>
+                <span class="comment">&lt;!-- Brand and toggle get grouped for better mobile display --&gt;</span>
+                <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"navbar-header"</span>&gt;</span>
+                  <span class="tag">&lt;<span class="title">button</span> <span class="attribute">type</span>=<span class="value">"button"</span> <span class="attribute">class</span>=<span class="value">"navbar-toggle collapsed"</span> <span class="attribute">data-toggle</span>=<span class="value">"collapse"</span> <span class="attribute">data-target</span>=<span class="value">"#bs-example-navbar-collapse-1"</span> <span class="attribute">aria-expanded</span>=<span class="value">"false"</span>&gt;</span>
+                    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"sr-only"</span>&gt;</span>Toggle navigation<span class="tag">&lt;/<span class="title">span</span>&gt;</span>
+                    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"icon-bar"</span>&gt;</span><span class="tag">&lt;/<span class="title">span</span>&gt;</span>
+                    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"icon-bar"</span>&gt;</span><span class="tag">&lt;/<span class="title">span</span>&gt;</span>
+                    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"icon-bar"</span>&gt;</span><span class="tag">&lt;/<span class="title">span</span>&gt;</span>
+                  <span class="tag">&lt;/<span class="title">button</span>&gt;</span>
+                  <span class="tag">&lt;<span class="title">a</span> <span class="attribute">class</span>=<span class="value">"navbar-brand"</span> <span class="attribute">href</span>=<span class="value">"#"</span>&gt;</span>Brand<span class="tag">&lt;/<span class="title">a</span>&gt;</span>
+                <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
 
+                <span class="comment">&lt;!-- Collect the nav links, forms, and other content for toggling --&gt;</span>
+                <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"collapse navbar-collapse"</span> <span class="attribute">id</span>=<span class="value">"bs-example-navbar-collapse-1"</span>&gt;</span>
+                  <span class="tag">&lt;<span class="title">ul</span> <span class="attribute">class</span>=<span class="value">"nav navbar-nav"</span>&gt;</span>
+                    <span class="tag">&lt;<span class="title">li</span> <span class="attribute">class</span>=<span class="value">"active"</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"#"</span>&gt;</span>Link <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"sr-only"</span>&gt;</span>(current)<span class="tag">&lt;/<span class="title">span</span>&gt;</span><span class="tag">&lt;/<span class="title">a</span>&gt;</span><span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+                    <span class="tag">&lt;<span class="title">li</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"#"</span>&gt;</span>Link<span class="tag">&lt;/<span class="title">a</span>&gt;</span><span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+                    <span class="tag">&lt;<span class="title">li</span> <span class="attribute">class</span>=<span class="value">"dropdown"</span>&gt;</span>
+                      <span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"#"</span> <span class="attribute">class</span>=<span class="value">"dropdown-toggle"</span> <span class="attribute">data-toggle</span>=<span class="value">"dropdown"</span> <span class="attribute">role</span>=<span class="value">"button"</span> <span class="attribute">aria-haspopup</span>=<span class="value">"true"</span> <span class="attribute">aria-expanded</span>=<span class="value">"false"</span>&gt;</span>Dropdown <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"caret"</span>&gt;</span><span class="tag">&lt;/<span class="title">span</span>&gt;</span><span class="tag">&lt;/<span class="title">a</span>&gt;</span>
+                      <span class="tag">&lt;<span class="title">ul</span> <span class="attribute">class</span>=<span class="value">"dropdown-menu"</span>&gt;</span>
+                        <span class="tag">&lt;<span class="title">li</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"#"</span>&gt;</span>Action<span class="tag">&lt;/<span class="title">a</span>&gt;</span><span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+                        <span class="tag">&lt;<span class="title">li</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"#"</span>&gt;</span>Another action<span class="tag">&lt;/<span class="title">a</span>&gt;</span><span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+                        <span class="tag">&lt;<span class="title">li</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"#"</span>&gt;</span>Something else here<span class="tag">&lt;/<span class="title">a</span>&gt;</span><span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+                        <span class="tag">&lt;<span class="title">li</span> <span class="attribute">role</span>=<span class="value">"separator"</span> <span class="attribute">class</span>=<span class="value">"divider"</span>&gt;</span><span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+                        <span class="tag">&lt;<span class="title">li</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"#"</span>&gt;</span>Separated link<span class="tag">&lt;/<span class="title">a</span>&gt;</span><span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+                        <span class="tag">&lt;<span class="title">li</span> <span class="attribute">role</span>=<span class="value">"separator"</span> <span class="attribute">class</span>=<span class="value">"divider"</span>&gt;</span><span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+                        <span class="tag">&lt;<span class="title">li</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"#"</span>&gt;</span>One more separated link<span class="tag">&lt;/<span class="title">a</span>&gt;</span><span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+                      <span class="tag">&lt;/<span class="title">ul</span>&gt;</span>
+                    <span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+                  <span class="tag">&lt;/<span class="title">ul</span>&gt;</span>
+                  <span class="tag">&lt;<span class="title">form</span> <span class="attribute">class</span>=<span class="value">"navbar-form navbar-left"</span> <span class="attribute">role</span>=<span class="value">"search"</span>&gt;</span>
+                    <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"form-group"</span>&gt;</span>
+                      <span class="tag">&lt;<span class="title">input</span> <span class="attribute">type</span>=<span class="value">"text"</span> <span class="attribute">class</span>=<span class="value">"form-control"</span> <span class="attribute">placeholder</span>=<span class="value">"Search"</span>&gt;</span>
+                    <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+                    <span class="tag">&lt;<span class="title">button</span> <span class="attribute">type</span>=<span class="value">"submit"</span> <span class="attribute">class</span>=<span class="value">"btn btn-default"</span>&gt;</span>Submit<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
+                  <span class="tag">&lt;/<span class="title">form</span>&gt;</span>
+                <span class="tag">&lt;/<span class="title">div</span>&gt;</span><span class="comment">&lt;!-- /.navbar-collapse --&gt;</span>
+              <span class="tag">&lt;/<span class="title">div</span>&gt;</span><span class="comment">&lt;!-- /.container-fluid --&gt;</span>
+            <span class="tag">&lt;/<span class="title">nav</span>&gt;</span>
+          <span class="tag">&lt;/<span class="title">header</span>&gt;</span>
+        <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"container"</span>&gt;</span>
+            {% block content %}
+            <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">""</span> <span class="attribute">ng-view</span>&gt;</span>
 
-<span class="class"><span class="keyword">class</span> <span class="title">LatestChartsFeeds</span><span class="params">(Feed)</span>:</span>
-    title = <span class="string">'Top 10 Songs'</span>
-    link = <span class="string">'/charts/'</span>
-    description = <span class="string">"Top 10 Songs in English, Hindi. Weekly Updated"</span>
-
-    <span class="function"><span class="keyword">def</span> <span class="title">items</span><span class="params">(self)</span>:</span>
-        <span class="keyword">return</span> Chart.objects.order_by(<span class="string">'-week'</span>)[:<span class="number">10</span>]
-
-    <span class="function"><span class="keyword">def</span> <span class="title">item_title</span><span class="params">(self, item)</span>:</span>
-        <span class="keyword">return</span> <span class="string">"Top 10 "</span> + item.get_language_display() + <span class="string">" Songs in "</span> + item.week.strftime(<span class="string">"%B %d, %Y"</span>)
-
-    <span class="function"><span class="keyword">def</span> <span class="title">item_description</span><span class="params">(self, item)</span>:</span>
-        songs = item.songs.all()
-        content = <span class="string">'&lt;ul&gt;'</span>
-        template = <span class="string">'&lt;li&gt;&lt;a href="%s"&gt;%s&lt;/a&gt;&lt;/li&gt;'</span>
-        <span class="keyword">for</span> song <span class="keyword">in</span> songs:
-            temp = template % (song.get_absolute_url(), song.name)
-            content += temp
-        <span class="keyword">return</span> content + <span class="string">'&lt;/ul&gt;'</span>
+            <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+            {% endblock content %}
+        <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+        {% load_scripts %}
+        <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"{% static 'js/app.js' %}"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"{% static 'js/controllers.js' %}"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"{% static 'js/services.js' %}"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"{% static 'js/directives.js' %}"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+    <span class="tag">&lt;/<span class="title">body</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">html</span>&gt;</span>
 </code></pre>
-<p>Here we are fetching lastest chart in each language and displaying them in format.
-Read more about <a href="https://docs.djangoproject.com/en/1.8/ref/contrib/syndication/">syndication feeds</a> in&nbsp;django.</p>
-<h3 id="sitemaps">Sitemaps</h3>
-<p>For Sitemaps add <code>&#39;django.contrib.sitemaps&#39;</code> to <code>INSTALLED_APPS</code> tuple.</p>
-<pre><code class="lang-python"><span class="keyword">from</span> django.contrib.sitemaps <span class="keyword">import</span> Sitemap
-<span class="keyword">from</span> .models <span class="keyword">import</span> Chart, Song
+<p>It is a pretty basic layout in which we are styling using <a href="http://getbootstrap.com/">Twitter Bootstrap</a>.
+We are using AngularJS so it contains <code>ng-view</code> directive. We are also loading bunch of angular scripts at the&nbsp;end.</p>
+<p>In the <code>questions/templates/questions</code> folder create new files <code>question_list.html</code> and <code>quesiton_detail.html</code>.
+In the <code>question_list.html</code> file add the following&nbsp;content.</p>
+<pre><code class="lang-html">{% extends 'base.html' %}
 
-
-<span class="class"><span class="keyword">class</span> <span class="title">ChartSitemap</span><span class="params">(Sitemap)</span>:</span>
-    changefreq = <span class="string">"never"</span>
-    priority = <span class="number">0.5</span>
-
-    <span class="function"><span class="keyword">def</span> <span class="title">items</span><span class="params">(self)</span>:</span>
-        <span class="keyword">return</span> Chart.objects.all()
-
-    <span class="function"><span class="keyword">def</span> <span class="title">lastmod</span><span class="params">(self, obj)</span>:</span>
-        <span class="keyword">return</span> obj.created_at
-
-
-<span class="class"><span class="keyword">class</span> <span class="title">SongSitemap</span><span class="params">(Sitemap)</span>:</span>
-    changefreq = <span class="string">'never'</span>
-    priority = <span class="number">0.5</span>
-
-    <span class="function"><span class="keyword">def</span> <span class="title">items</span><span class="params">(self)</span>:</span>
-        <span class="keyword">return</span> Song.objects.all()
-
-    <span class="function"><span class="keyword">def</span> <span class="title">lastmod</span><span class="params">(self, obj)</span>:</span>
-        <span class="keyword">return</span> obj.updated_at
+{% block content %}
+<span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"row"</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"col-lg-12"</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"list-group"</span>&gt;</span>
+            {% for question in question_list %}
+            <span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"{% url 'question_detail' question.id %}"</span> <span class="attribute">class</span>=<span class="value">"list-group-item"</span>&gt;</span>
+                {{ question.question_text }}
+            <span class="tag">&lt;/<span class="title">a</span>&gt;</span>
+            {% endfor %}
+        <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+    <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+{% endblock content %}
 </code></pre>
-<p>Read more about <a href="https://docs.djangoproject.com/en/1.8/ref/contrib/sitemaps/">sitemaps</a> in&nbsp;django.</p>
-<h3 id="django-tutorial-series-making-top10songs-http-www-top10songs-co-in-">Django Tutorial Series - Making <a href="http://www.top10songs.co.in">Top10Songs</a></h3>
-<ul>
-<li><a href="/articles/django-tutorial-part-1">Django Tutorial Part&nbsp;1</a></li>
-<li><a href="/articles/django-tutorial-part-2">Django Tutorial Part&nbsp;2</a></li>
-<li><a href="/articles/django-tutorial-part-3">Django Tutorial Part&nbsp;3</a></li>
-<li><a href="/articles/django-tutorial-part-4">Django Tutorial Part&nbsp;4</a></li>
-</ul>
+<p>And in the <code>testseries/questions/templates/questions/question_detail.html</code> file add the following&nbsp;content.</p>
+<pre><code class="lang-html">{% extends 'base.html' %}
+
+{% block content %}
+<span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"row"</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">h2</span>&gt;</span>{{ question.question_text }}<span class="tag">&lt;/<span class="title">h2</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">p</span>&gt;</span>
+        {{ question.get_sisubject }}
+    <span class="tag">&lt;/<span class="title">p</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">ul</span>&gt;</span>
+        {% for choice in question.choices.all %}
+        <span class="tag">&lt;<span class="title">li</span>&gt;</span>{{ choice.choice_text }}<span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+        {% endfor %}
+    <span class="tag">&lt;/<span class="title">ul</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+{% endblock %}
+</code></pre>
+<p>Although we have added templates to be generated by <code>Django</code>, we will be using <code>AngularJS</code> version which we will cover in next&nbsp;part.</p>
 
           </section>
         </article>
         <article class="article intro">
           <header>
-            <p class="date"><span>01. August 2015</span></p>
-            <h2><a href="/articles/django-tutorial-part-3/">Django Tutorial - Part 3</a></h2>
+            <p class="date"><span>08. August 2015</span></p>
+            <h2><a href="/articles/django-tutorial-2-part-2/">Django Tutorial 2 - Part 2</a></h2>
           </header>
-          <section class="content">
-            <p class="more"><a href="/articles/django-tutorial-part-3/">more</a></p>
+          <section class="content"><h3 id="questions-app">Questions&nbsp;app</h3>
+<p>In previous part we initialized django project with database settings and various configurations.
+So lets begin with creating models and views for the&nbsp;app.</p>
+<h3 id="models">Models</h3>
+<p>Open <code>questions/models.py</code> file and add the following&nbsp;code.</p>
+<pre><code class="lang-python"><span class="keyword">from</span> __future__ <span class="keyword">import</span> unicode_literals
+<span class="keyword">from</span> django.utils.encoding <span class="keyword">import</span> python_2_unicode_compatible
+
+<span class="keyword">from</span> django.db <span class="keyword">import</span> models
+
+<span class="decorator">@python_2_unicode_compatible</span>
+<span class="class"><span class="keyword">class</span> <span class="title">Exam</span><span class="params">(models.Model)</span>:</span>
+    name = models.CharField(max_length=<span class="number">100</span>)
+    abbr = models.CharField(max_length=<span class="number">10</span>)
+    description = models.TextField(blank=<span class="keyword">True</span>)
+    created_at = models.DateTimeField(auto_now_add=<span class="keyword">True</span>)
+    updated_at = models.DateTimeField(auto_now=<span class="keyword">True</span>)
+
+    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span>
+        <span class="keyword">return</span> self.name
+
+<span class="decorator">@python_2_unicode_compatible</span>
+<span class="class"><span class="keyword">class</span> <span class="title">Subject</span><span class="params">(models.Model)</span>:</span>
+    name = models.CharField(max_length=<span class="number">50</span>)
+
+    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span>
+        <span class="keyword">return</span> self.name
+
+<span class="decorator">@python_2_unicode_compatible</span>
+<span class="class"><span class="keyword">class</span> <span class="title">Unit</span><span class="params">(models.Model)</span>:</span>
+    name = models.CharField(max_length=<span class="number">100</span>)
+    subject = models.ForeignKey(Subject)
+
+    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span>
+        <span class="keyword">return</span> self.name
+
+<span class="decorator">@python_2_unicode_compatible</span>
+<span class="class"><span class="keyword">class</span> <span class="title">Chapter</span><span class="params">(models.Model)</span>:</span>
+    name = models.CharField(max_length=<span class="number">100</span>)
+    unit = models.ForeignKey(Unit)
+
+    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span>
+        <span class="keyword">return</span> self.name
+
+<span class="decorator">@python_2_unicode_compatible</span>
+<span class="class"><span class="keyword">class</span> <span class="title">Question</span><span class="params">(models.Model)</span>:</span>
+    question_text = models.TextField()
+    answer = models.CharField(max_length=<span class="number">2</span>)
+    hint = models.TextField(null=<span class="keyword">True</span>, blank=<span class="keyword">True</span>)
+    chapter = models.ForeignKey(Chapter)
+    image = models.ImageField(upload_to=<span class="string">'static/img/questions'</span>, null=<span class="keyword">True</span>, blank=<span class="keyword">True</span>)
+    created_at = models.DateTimeField(auto_now_add=<span class="keyword">True</span>)
+    updated_at = models.DateTimeField(auto_now=<span class="keyword">True</span>)
+
+    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span>
+        <span class="keyword">return</span> self.question_text
+
+<span class="decorator">@python_2_unicode_compatible</span>
+<span class="class"><span class="keyword">class</span> <span class="title">Choice</span><span class="params">(models.Model)</span>:</span>
+    question = models.ForeignKey(Question, related_name=<span class="string">'choices'</span>)
+    choice_text = models.CharField(max_length=<span class="number">200</span>)
+
+    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span>
+        <span class="keyword">return</span> self.choice_text
+</code></pre>
+<p>In order to make our code both python 2 and python 3 compatible we are importing <code>unicode_literals</code> and <code>python_2_unicode_compatible</code>. Read more about it at <a href="https://docs.djangoproject.com/en/1.8/topics/python3/#str-and-unicode-methods">django docs</a>.
+Sample value for above model would be like&nbsp;following.</p>
+<pre><code class="lang-json">{
+    "<span class="attribute">count</span>": <span class="value"><span class="number">2</span></span>,
+    "<span class="attribute">next</span>": <span class="value"><span class="literal">null</span></span>,
+    "<span class="attribute">previous</span>": <span class="value"><span class="literal">null</span></span>,
+    "<span class="attribute">results</span>": <span class="value">[
+        {
+            "<span class="attribute">pk</span>": <span class="value"><span class="number">4</span></span>,
+            "<span class="attribute">question_text</span>": <span class="value"><span class="string">"This is my 1<span class="ord">st</span> Question ?"</span></span>,
+            "<span class="attribute">answer</span>": <span class="value"><span class="string">"1"</span></span>,
+            "<span class="attribute">hint</span>": <span class="value"><span class="string">"Hint for question one !"</span></span>,
+            "<span class="attribute">chapter</span>": <span class="value">{
+                "<span class="attribute">url</span>": <span class="value"><span class="string">"http://powerful-gorge-4516.herokuapp.com/api/chapters/1/"</span></span>,
+                "<span class="attribute">name</span>": <span class="value"><span class="string">"Group D"</span></span>,
+                "<span class="attribute">unit</span>": <span class="value">{
+                    "<span class="attribute">url</span>": <span class="value"><span class="string">"http://powerful-gorge-4516.herokuapp.com/api/units/1/"</span></span>,
+                    "<span class="attribute">name</span>": <span class="value"><span class="string">"2"</span></span>,
+                    "<span class="attribute">subject</span>": <span class="value">{
+                        "<span class="attribute">url</span>": <span class="value"><span class="string">"http://powerful-gorge-4516.herokuapp.com/api/subjects/1/"</span></span>,
+                        "<span class="attribute">name</span>": <span class="value"><span class="string">"Chemistry "</span>
+                    </span>}
+                </span>}
+            </span>}</span>,
+            "<span class="attribute">image</span>": <span class="value"><span class="literal">null</span></span>,
+            "<span class="attribute">choices</span>": <span class="value">[
+                <span class="string">"D. None of the above is correct."</span>,
+                <span class="string">"C. Choice C for Q 1"</span>,
+                <span class="string">"B. Choice B for Q 1"</span>,
+                <span class="string">"A. Choice A for Q1"</span>
+            ]
+        </span>},
+        {
+            "<span class="attribute">pk</span>": <span class="value"><span class="number">5</span></span>,
+            "<span class="attribute">question_text</span>": <span class="value"><span class="string">"What is the work done by a man in carrying a suitcase weighing 30 kg over his head, when he travels 10 m in horizontal direction."</span></span>,
+            "<span class="attribute">answer</span>": <span class="value"><span class="string">"1"</span></span>,
+            "<span class="attribute">hint</span>": <span class="value"><span class="string">"This is pretty basic question. No help required?"</span></span>,
+            "<span class="attribute">chapter</span>": <span class="value">{
+                "<span class="attribute">url</span>": <span class="value"><span class="string">"http://powerful-gorge-4516.herokuapp.com/api/chapters/3/"</span></span>,
+                "<span class="attribute">name</span>": <span class="value"><span class="string">"Organic"</span></span>,
+                "<span class="attribute">unit</span>": <span class="value">{
+                    "<span class="attribute">url</span>": <span class="value"><span class="string">"http://powerful-gorge-4516.herokuapp.com/api/units/2/"</span></span>,
+                    "<span class="attribute">name</span>": <span class="value"><span class="string">"Polymers"</span></span>,
+                    "<span class="attribute">subject</span>": <span class="value">{
+                        "<span class="attribute">url</span>": <span class="value"><span class="string">"http://powerful-gorge-4516.herokuapp.com/api/subjects/1/"</span></span>,
+                        "<span class="attribute">name</span>": <span class="value"><span class="string">"Chemistry "</span>
+                    </span>}
+                </span>}
+            </span>}</span>,
+            "<span class="attribute">image</span>": <span class="value"><span class="literal">null</span></span>,
+            "<span class="attribute">choices</span>": <span class="value">[
+                <span class="string">"30 kJ"</span>,
+                <span class="string">"0"</span>,
+                <span class="string">"(\\ a \\ne 0 \\)"</span>,
+                <span class="string">"When $$a \\ne 0$$, there are two solutions to \\(ax^2 + bx + c = 0\\) and they are $$x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}.$$"</span>
+            ]
+        </span>}
+    ]
+</span>}
+</code></pre>
+<h3 id="serializers">Serializers</h3>
+<p>Create a new file <code>questions/serializers.py</code> and add the following&nbsp;code.</p>
+<pre><code class="lang-python"><span class="keyword">from</span> rest_framework <span class="keyword">import</span> serializers
+
+<span class="keyword">from</span> .models <span class="keyword">import</span> Question, Choice, Exam, Subject, Unit, Chapter
+
+<span class="class"><span class="keyword">class</span> <span class="title">QuestionSerializer</span><span class="params">(serializers.HyperlinkedModelSerializer)</span>:</span>
+    choices = serializers.StringRelatedField(many=<span class="keyword">True</span>)
+    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span>
+        model = Question
+        fields = (<span class="string">'pk'</span>, <span class="string">'question_text'</span>, <span class="string">'answer'</span>, <span class="string">'hint'</span>, <span class="string">'chapter'</span>, <span class="string">'image'</span>, <span class="string">'choices'</span>)
+        depth = <span class="number">3</span>
+
+<span class="class"><span class="keyword">class</span> <span class="title">ChoiceSerializer</span><span class="params">(serializers.HyperlinkedModelSerializer)</span>:</span>
+    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span>
+        model = Choice
+        fields = (<span class="string">'choice_text'</span>, <span class="string">'question'</span>)
+
+<span class="class"><span class="keyword">class</span> <span class="title">ExamSerializer</span><span class="params">(serializers.HyperlinkedModelSerializer)</span>:</span>
+    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span>
+        model = Exam
+        fields = (<span class="string">'name'</span>, <span class="string">'abbr'</span>, <span class="string">'description'</span>)
+
+<span class="class"><span class="keyword">class</span> <span class="title">SubjectSerializer</span><span class="params">(serializers.HyperlinkedModelSerializer)</span>:</span>
+    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span>
+        model = Subject
+        fields = (<span class="string">'name'</span>, )
+
+<span class="class"><span class="keyword">class</span> <span class="title">UnitSerializer</span><span class="params">(serializers.HyperlinkedModelSerializer)</span>:</span>
+    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span>
+        model = Unit
+        fields = (<span class="string">'name'</span>, <span class="string">'subject'</span>)
+
+<span class="class"><span class="keyword">class</span> <span class="title">ChapterSerializer</span><span class="params">(serializers.HyperlinkedModelSerializer)</span>:</span>
+    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span>
+        model = Chapter
+        fields = (<span class="string">'name'</span>, <span class="string">'unit'</span>)
+</code></pre>
+<p>In the above example we are creating json serializers for all the models we just created. They are subclass of <code>HyperlinkedModelSerializer</code> which need a model and its fields which we want to display. <code>QuestionSerializer</code> needs an extra field <code>depth</code> because it has parent foreign key i.e. <code>chapter</code>.</p>
+<h3 id="views">Views</h3>
+<p>Edit your <code>questions/views.py</code> file to add the following&nbsp;code.</p>
+<pre><code class="lang-python"><span class="keyword">from</span> datetime <span class="keyword">import</span> datetime, timedelta
+
+<span class="keyword">from</span> django.shortcuts <span class="keyword">import</span> render
+
+<span class="keyword">from</span> django.db.models <span class="keyword">import</span> Count
+<span class="keyword">from</span> django.views.generic.detail <span class="keyword">import</span> DetailView
+<span class="keyword">from</span> django.views.generic.edit <span class="keyword">import</span> UpdateView, CreateView, DeleteView
+<span class="keyword">from</span> django.views.generic.list <span class="keyword">import</span> ListView
+
+<span class="keyword">from</span> rest_framework.viewsets <span class="keyword">import</span> ModelViewSet
+<span class="keyword">from</span> rest_framework.renderers <span class="keyword">import</span> JSONRenderer
+<span class="keyword">from</span> rest_framework.response <span class="keyword">import</span> Response
+<span class="keyword">from</span> rest_framework.views <span class="keyword">import</span> APIView
+
+<span class="keyword">from</span> .serializers <span class="keyword">import</span> QuestionSerializer, ChoiceSerializer, ExamSerializer, UnitSerializer, ChapterSerializer, SubjectSerializer
+
+<span class="keyword">from</span> .models <span class="keyword">import</span> Question, Choice, Exam, Unit, Chapter, Subject
+
+<span class="class"><span class="keyword">class</span> <span class="title">QuestionDetail</span><span class="params">(DetailView)</span>:</span>
+    model = Question
+question_detail = QuestionDetail.as_view()
+
+<span class="class"><span class="keyword">class</span> <span class="title">QuestionList</span><span class="params">(ListView)</span>:</span>
+    model = Question
+question_list = QuestionList.as_view()
+
+<span class="class"><span class="keyword">class</span> <span class="title">QuestionViewSet</span><span class="params">(ModelViewSet)</span>:</span>
+    queryset = Question.objects.all()
+    serializer_class = QuestionSerializer
+
+<span class="class"><span class="keyword">class</span> <span class="title">ChoiceViewSet</span><span class="params">(ModelViewSet)</span>:</span>
+    queryset = Choice.objects.all()
+    serializer_class = ChoiceSerializer
+
+<span class="class"><span class="keyword">class</span> <span class="title">ExamViewSet</span><span class="params">(ModelViewSet)</span>:</span>
+    queryset = Exam.objects.all()
+    serializer_class = ExamSerializer
+
+<span class="class"><span class="keyword">class</span> <span class="title">SubjectViewSet</span><span class="params">(ModelViewSet)</span>:</span>
+    queryset = Subject.objects.all()
+    serializer_class = SubjectSerializer
+
+<span class="class"><span class="keyword">class</span> <span class="title">UnitViewSet</span><span class="params">(ModelViewSet)</span>:</span>
+    queryset = Unit.objects.all()
+    serializer_class = UnitSerializer
+
+<span class="class"><span class="keyword">class</span> <span class="title">ChapterViewSet</span><span class="params">(ModelViewSet)</span>:</span>
+    queryset = Chapter.objects.all()
+    serializer_class = ChapterSerializer
+</code></pre>
+<p>In the above code we have imported Django’s generic class views like <code>ListView</code>, <code>DetailView</code> and also from <code>django rest framework</code>. We are creating a <code>viewset</code> for each model and its <code>serializer</code>.</p>
+<p>That’s all for this part in the next part we will create templates and get started on the&nbsp;frontend.</p>
+
           </section>
         </article>
         <article class="article intro">
           <header>
-            <p class="date"><span>31. July 2015</span></p>
-            <h2><a href="/articles/django-tutorial-part-2/">Django Tutorial - Part 2</a></h2>
+            <p class="date"><span>05. August 2015</span></p>
+            <h2><a href="/articles/django-tutorial-2-part-1/">Django Tutorial 2 - Part 1</a></h2>
           </header>
-          <section class="content"><p>Welcome to part 2 of Django Tutorial. In this part we will write <code>Views</code> and <code>Urls</code> files.</p>
+          <section class="content"><p>Welcome to Second hands on Django Tutorial. In this part we will make a testseries application. We will develop the backend using django and django-rest-framework while for the frontend will be developed in&nbsp;AngularJS.</p>
+<p>This series is work in progress, so it make take a while before application is&nbsp;completed.</p>
+<h3 id="prerequitese">Prerequitese</h3>
+<p>Along with Django this project also requires bower to be installed and uses sqlite as&nbsp;database.</p>
+<p>As usual create a new django project in virtualenv using&nbsp;virtualenvwrapper.</p>
+<pre><code class="lang-bash">mkvirtualenv testseries
+</code></pre>
+<p>In the newly created project install following&nbsp;dependencies.</p>
+<pre><code>Django==1.8.2
+Pillow==2.9.0
+argparse==1.2.1
+dj-database-url==0.3.0
+dj-static==0.0.6
+django-debug-toolbar==1.3.2
+django-extensions==1.5.5
+django-toolbelt==0.0.1
+djangorestframework==3.1.3
+gunicorn==19.3.0
+psycopg2==2.6.1
+six==1.9.0
+sqlparse==0.1.15
+static3==0.6.1
+wsgiref==0.1.2
+</code></pre><p>Apply the following changes to <code>testseries/settings.py</code> file</p>
+<pre><code class="lang-python">-SECRET_KEY = <span class="string">'kw_z-k_7yz$owwel0afiu5vd_q1a@(iub_to_u*&amp;hjjt@4y4yy'</span>
++<span class="keyword">from</span> django.core.exceptions <span class="keyword">import</span> ImproperlyConfigured
++
++<span class="function"><span class="keyword">def</span> <span class="title">get_env_variable</span><span class="params">(var_name)</span>:</span>
++    <span class="keyword">try</span>:
++        <span class="keyword">return</span> os.environ[var_name]
++    <span class="keyword">except</span> KeyError:
++        error_msg = <span class="string">"Set the %s env variable"</span> % var_name
++        <span class="keyword">raise</span> ImproperlyConfigured(error_msg)
++
++SECRET_KEY = get_env_variable(<span class="string">'SECRET_KEY'</span>)
 
-            <p class="more"><a href="/articles/django-tutorial-part-2/">more</a></p>
+-<span class="caps">DEBUG</span> = <span class="keyword">True</span>
++<span class="caps">DEBUG</span> = <span class="keyword">False</span>
++TEMPLATE_DEBUG = <span class="keyword">False</span>
+
++STATICFILES_DIRS = (
++    os.path.join(BASE_DIR, <span class="string">"static"</span>),
++)
++
++TEMPLATE_DIRS = (
++    os.path.join(BASE_DIR, <span class="string">'templates'</span>),
++)
++
++SITE_ID = <span class="number">1</span>
++
++INTERNAL_IPS = (<span class="string">'127.0.0.1'</span>,)
++
++<span class="comment"># List of callables that know how to import templates from various sources.</span>
++TEMPLATE_LOADERS = (
++    <span class="string">'django.template.loaders.filesystem.Loader'</span>,
++    <span class="string">'django.template.loaders.app_directories.Loader'</span>,
++    <span class="string">'django.template.loaders.eggs.Loader'</span>,
++)
++
++TEMPLATE_CONTEXT_PROCESSORS = (
++    <span class="string">'django.contrib.auth.context_processors.auth'</span>,
++    <span class="string">'django.core.context_processors.request'</span>,
++  
++)
++
++<span class="keyword">if</span> get_env_variable(<span class="string">'<span class="caps">DEVELOPMENT</span>'</span>) == <span class="string">'True'</span>:
++
++    INSTALLED_APPS += (<span class="string">'debug_toolbar'</span>, <span class="string">'django_extensions'</span>, )
++
++    MIDDLEWARE_CLASSES += (<span class="string">'debug_toolbar.middleware.DebugToolbarMiddleware'</span>, )
++
++    INTERNAL_IPS = (<span class="string">'127.0.0.1'</span>, )
++
++    <span class="caps">DEBUG</span> = <span class="keyword">True</span>
++
++    TEMPLATE_DEBUG = <span class="keyword">True</span>
++
++    <span class="caps">DATABASES</span> = {
++        <span class="string">'default'</span>: {
++            <span class="string">'<span class="caps">ENGINE</span>'</span>: <span class="string">'django.db.backends.sqlite3'</span>,
++            <span class="string">'<span class="caps">NAME</span>'</span>: os.path.join(BASE_DIR, <span class="string">'db.sqlite3'</span>),
++        }
++    }
+</code></pre>
+<p>Since we are loading <code>SECRET_KEY</code> and <code>DEVELOPMENT</code> values from environment variables we need to run,
+<code>export SECRET_KEY=&#39;&lt;KEY_HERE&gt;&#39;</code> and <code>export DEVELOPMENT=&#39;True&#39;</code> if on linux otherwise replace <code>export</code> with <code>SET</code> before running <code>python manage.py runserver</code>. 
+Next run <code>python manage.py migrate</code> to setup initial tables and then run <code>python createapp questions</code> to initailize new&nbsp;app.</p>
+<p>With the django project initialized, next we will start working on questions&nbsp;app.</p>
+
           </section>
         </article>
       </div>
