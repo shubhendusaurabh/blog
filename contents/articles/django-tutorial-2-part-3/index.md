@@ -1,0 +1,127 @@
+---
+title: Django Tutorial 2 - Part 3
+author: shubhu
+date: 2015-08-11
+template: article.jade
+---
+
+### Templates
+
+In this part we will being with frontend part.
+
+Create a new folder `templates` in both `testseries` and `testseries/questions`.
+In the root `templates` folder create a new file `base.html` and `scripts.html`.
+In the `base.html` file add the following lines of code.
+```html
+{% load static %}{% load question_extras %}
+<!DOCTYPE html>
+<html ng-app="Questions">
+    <head>
+        <meta charset="utf-8">
+        <title ng-bind="title"></title>
+        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" media="screen" charset="utf-8">
+        <link rel="stylesheet" href="{% static 'css/styles.css' %}" media="screen" charset="utf-8">
+    </head>
+    <body>
+        <div class="container">
+          <header>
+            <nav class="navbar navbar-default">
+              <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                  </button>
+                  <a class="navbar-brand" href="#">Brand</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                  <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
+                    <li><a href="#">Link</a></li>
+                    <li class="dropdown">
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+                      <ul class="dropdown-menu">
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Another action</a></li>
+                        <li><a href="#">Something else here</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#">Separated link</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#">One more separated link</a></li>
+                      </ul>
+                    </li>
+                  </ul>
+                  <form class="navbar-form navbar-left" role="search">
+                    <div class="form-group">
+                      <input type="text" class="form-control" placeholder="Search">
+                    </div>
+                    <button type="submit" class="btn btn-default">Submit</button>
+                  </form>
+                </div><!-- /.navbar-collapse -->
+              </div><!-- /.container-fluid -->
+            </nav>
+          </header>
+        </div>
+        <div class="container">
+            {% block content %}
+            <div class="" ng-view>
+
+            </div>
+            {% endblock content %}
+        </div>
+        {% load_scripts %}
+        <script src="{% static 'js/app.js' %}"></script>
+        <script src="{% static 'js/controllers.js' %}"></script>
+        <script src="{% static 'js/services.js' %}"></script>
+        <script src="{% static 'js/directives.js' %}"></script>
+    </body>
+</html>
+```
+It is a pretty basic layout in which we are styling using [Twitter Bootstrap](http://getbootstrap.com/).
+We are using AngularJS so it contains `ng-view` directive. We are also loading bunch of angular scripts at the end.
+
+In the `questions/templates/questions` folder create new files `question_list.html` and `quesiton_detail.html`.
+In the `question_list.html` file add the following content.
+```html
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="list-group">
+            {% for question in question_list %}
+            <a href="{% url 'question_detail' question.id %}" class="list-group-item">
+                {{ question.question_text }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock content %}
+```
+
+And in the `testseries/questions/templates/questions/question_detail.html` file add the following content.
+```html
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <h2>{{ question.question_text }}</h2>
+    <p>
+        {{ question.get_sisubject }}
+    </p>
+    <ul>
+        {% for choice in question.choices.all %}
+        <li>{{ choice.choice_text }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
+```
+
+Although we have added templates to be generated by `Django`, we will be using `AngularJS` version which we will cover in next part.
