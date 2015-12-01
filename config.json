@@ -5,7 +5,7 @@
     "owner": "shubhu",
     "description": "Ramblings of an immor(t)al demigod"
   },
-  "output": "../../GitHub/shubhendusaurabh.github.io",
+  "output": "../shubhendusaurabh.github.io",
   "plugins": [
     "./plugins/paginator.coffee"
   ],
